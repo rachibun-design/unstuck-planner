@@ -6,48 +6,64 @@
     <title>Unstuck: The Micro-Step Planner</title>
     <meta
       name="description"
-      content="A cute, gentle, and colorful multi-step planner to turn overwhelming choices into low-risk 3-day experimental micro-actions."
+      content="A warm, friendly decision helper that turns scary choices into easy 3-day test runs for teens and young adults."
     />
+    <meta property="og:title" content="Unstuck: The Micro-Step Planner" />
+    <meta
+      property="og:description"
+      content="A warm, friendly decision helper that turns scary choices into easy 3-day test runs for teens and young adults."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts for warm, rounded, friendly typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Quicksand:wght@600;700&display=swap"
       rel="stylesheet"
     />
 
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+
+    <!-- html2pdf.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
+      /* Warm Pastel & Playful Palette */
       :root {
-        /* Soft, Pastel & Colorful Palette */
-        --bg-main: #fbf7f4;
+        --bg-cream: #faf7f2;
         --card-bg: #ffffff;
         
-        --color-mint: #e2f0d9;
-        --color-mint-dark: #4b8b3b;
-        --color-yellow: #fff2cc;
-        --color-yellow-dark: #b8860b;
-        --color-pink: #fce4ec;
-        --color-pink-dark: #c2185b;
-        --color-lavender: #f3e5f5;
-        --color-lavender-dark: #7b1fa2;
-        --color-peach: #ffe0b2;
-        --color-peach-dark: #e65100;
+        /* Pastel Accents */
+        --mint-bg: #e8f5e9;
+        --mint-border: #c8e6c9;
+        --mint-primary: #2e7d32;
+        --mint-btn: #4caf50;
+        --mint-hover: #43a047;
 
-        --primary-accent: #6c5ce7;
-        --primary-hover: #5b4bc4;
-        --primary-light: #f0edff;
+        --yellow-bg: #fff9db;
+        --yellow-border: #ffe066;
+        --yellow-accent: #d97706;
 
-        --text-headline: #2d3436;
-        --text-body: #4a4a4a;
-        --text-muted: #8c7ae6;
-        --border-subtle: #f0e6df;
+        --pink-bg: #ffeef2;
+        --pink-border: #ffccd5;
+        --pink-accent: #db2777;
+
+        --lavender-bg: #f3e8ff;
+        --lavender-border: #e9d5ff;
+        --lavender-accent: #7c3aed;
         
-        --shadow-pop: 0 10px 25px -5px rgba(108, 92, 231, 0.12), 0 8px 16px -6px rgba(0, 0, 0, 0.04);
-        --radius-pill: 50px;
-        --radius-lg: 24px;
-        --radius-md: 16px;
-        --radius-sm: 10px;
+        --text-headline: #1e293b;
+        --text-body: #334155;
+        --text-muted: #64748b;
+        
+        --shadow-soft: 0 8px 24px rgba(148, 163, 184, 0.12);
+        --shadow-card: 0 14px 38px rgba(226, 214, 198, 0.4);
+        --radius-pill: 9999px;
+        --radius-card: 28px;
+        --radius-bubble: 20px;
       }
 
       * {
@@ -57,69 +73,140 @@
       }
 
       body {
-        background-color: var(--bg-main);
+        background-color: var(--bg-cream);
         color: var(--text-body);
-        font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
         line-height: 1.6;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 1.5rem;
+        background-image: 
+          radial-gradient(#eedcc5 0.75px, transparent 0.75px),
+          radial-gradient(#ebd6be 0.75px, var(--bg-cream) 0.75px);
+        background-size: 30px 30px;
+        background-position: 0 0, 15px 15px;
       }
 
-      h1, h2, h3, .heading-font {
-        font-family: 'Fredoka', cursive, sans-serif;
+      h1, h2, h3, h4, h5 {
+        font-family: 'Quicksand', 'Plus Jakarta Sans', sans-serif;
+        font-weight: 700;
         color: var(--text-headline);
         line-height: 1.25;
       }
 
-      .app-container {
+      .app-wrapper {
         width: 100%;
-        max-width: 680px;
+        max-width: 800px;
         margin: 0 auto;
+        padding: 1.75rem 1.25rem 3.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
       }
 
-      /* Navbar / Top Badge */
-      .top-brand {
-        text-align: center;
+      /* Top Navigation Bar */
+      .top-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         margin-bottom: 1.5rem;
       }
 
-      .brand-badge {
+      .brand-pill {
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.6rem;
         background: #ffffff;
-        padding: 0.4rem 1rem;
+        padding: 0.5rem 1.2rem;
         border-radius: var(--radius-pill);
-        font-size: 0.85rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #2e7d32;
+        border: 1.5px solid rgba(200, 230, 201, 0.9);
+        cursor: pointer;
+        transition: transform 0.15s ease;
+      }
+
+      .brand-pill:hover {
+        transform: translateY(-1px);
+      }
+
+      .restart-btn {
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
+        color: var(--text-muted);
+        font-size: 0.825rem;
         font-weight: 600;
-        color: var(--primary-accent);
-        box-shadow: 0 4px 12px rgba(108, 92, 231, 0.08);
-        border: 1px solid var(--border-subtle);
+        padding: 0.45rem 1.1rem;
+        border-radius: var(--radius-pill);
+        cursor: pointer;
+        transition: all 0.15s ease;
       }
 
-      /* Step Card Wrapper & Transitions */
-      .step-card {
-        background: var(--card-bg);
-        border-radius: var(--radius-lg);
-        padding: 2.5rem 2rem;
-        box-shadow: var(--shadow-pop);
-        border: 2px solid #f7efe8;
-        display: none; /* Controlled by JS */
-        animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      .restart-btn:hover {
+        background: #f8fafc;
+        color: var(--text-headline);
       }
 
-      .step-card.active {
+      /* Wizard Progress Stepper */
+      .wizard-stepper {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .step-dot {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.35rem 0.75rem;
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
+        border-radius: var(--radius-pill);
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        transition: all 0.2s ease;
+      }
+
+      .step-dot.active {
+        background: var(--mint-bg);
+        border-color: var(--mint-border);
+        color: var(--mint-primary);
+        font-weight: 700;
+        transform: scale(1.04);
+      }
+
+      .step-dot.completed {
+        background: #f1f8e9;
+        border-color: #dcedc8;
+        color: #558b2f;
+      }
+
+      .step-connector {
+        width: 10px;
+        height: 2px;
+        background: #e2e8f0;
+      }
+
+      /* Wizard Screens */
+      .wizard-screen {
+        display: none;
+        animation: screenFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      .wizard-screen.active {
         display: block;
       }
 
-      @keyframes slideUp {
+      @keyframes screenFadeIn {
         from {
           opacity: 0;
-          transform: translateY(18px);
+          transform: translateY(10px);
         }
         to {
           opacity: 1;
@@ -127,502 +214,3650 @@
         }
       }
 
-      /* Landing Page Specifics */
+      /* Main Cute Card */
+      .cute-card {
+        background: var(--card-bg);
+        border-radius: var(--radius-card);
+        padding: 2.25rem;
+        box-shadow: var(--shadow-card);
+        border: 2px solid #f6efe2;
+        position: relative;
+      }
+
+      @media (max-width: 600px) {
+        .cute-card {
+          padding: 1.5rem 1.15rem;
+          border-radius: 22px;
+        }
+      }
+
+      /* Mascot Artwork Styling */
+      .mascot-svg {
+        display: block;
+        margin: 0 auto;
+        overflow: visible;
+      }
+
+      .mascot-hero-wrap {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1.25rem;
+      }
+
+      .character-banner {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        background: #fdfbf7;
+        border: 1.5px dashed #e4d7c5;
+        border-radius: var(--radius-bubble);
+        padding: 1.25rem 1.4rem;
+        margin-bottom: 1.75rem;
+        text-align: left;
+      }
+
+      @media (max-width: 580px) {
+        .character-banner {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+      }
+
+      .character-banner-text h4 {
+        font-size: 0.95rem;
+        color: #1b4332;
+        margin-bottom: 0.25rem;
+      }
+
+      .character-banner-text p {
+        font-size: 0.85rem;
+        color: var(--text-body);
+        line-height: 1.45;
+      }
+
+      /* Landing Page Styles */
       .landing-hero {
         text-align: center;
       }
 
-      .landing-emoji {
-        font-size: 3.5rem;
-        margin-bottom: 0.5rem;
-        display: block;
-      }
-
-      .landing-hero h1 {
-        font-size: 2.5rem;
-        color: var(--text-headline);
-        margin-bottom: 0.75rem;
-      }
-
-      .landing-hero p {
-        font-size: 1.05rem;
-        color: #57606f;
-        margin-bottom: 1.75rem;
-        max-width: 520px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .theory-mini-pill {
-        background: var(--primary-light);
-        border-radius: var(--radius-md);
-        padding: 1rem 1.25rem;
-        font-size: 0.875rem;
-        color: var(--primary-accent);
-        text-align: left;
-        margin-bottom: 2rem;
-        border: 1px dashed #c8d6e5;
-      }
-
-      .theory-mini-pill strong {
-        display: block;
-        font-size: 0.925rem;
-        margin-bottom: 0.2rem;
-        color: var(--text-headline);
-      }
-
-      /* Wizard Progress Bar */
-      .progress-bar-container {
-        display: flex;
+      .badge-tag {
+        display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
-      }
-
-      .progress-dot {
-        flex: 1;
-        height: 8px;
-        background: #f1f2f6;
-        border-radius: 10px;
-        transition: background-color 0.3s ease;
-      }
-
-      .progress-dot.active {
-        background: var(--primary-accent);
-      }
-
-      /* Question Form Styling */
-      .question-number {
-        font-size: 0.85rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--primary-accent);
-        margin-bottom: 0.5rem;
-      }
-
-      .question-title {
-        font-size: 1.6rem;
-        margin-bottom: 0.5rem;
-      }
-
-      .question-subtitle {
-        font-size: 0.925rem;
-        color: #747d8c;
-        margin-bottom: 1.5rem;
-      }
-
-      /* Custom Input Fields */
-      input[type="text"] {
-        width: 100%;
-        font-family: inherit;
-        font-size: 1rem;
-        padding: 1rem 1.25rem;
-        border: 2px solid #e4e7eb;
-        border-radius: var(--radius-md);
-        outline: none;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        background: #fafbfc;
-      }
-
-      input[type="text"]:focus {
-        border-color: var(--primary-accent);
-        background: #ffffff;
-        box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.12);
-      }
-
-      /* Preset Chips */
-      .presets-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-top: 1rem;
-      }
-
-      .preset-chip {
-        background: var(--primary-light);
-        color: var(--primary-accent);
-        border: 1px solid #dcd6f7;
+        gap: 0.4rem;
+        background: var(--yellow-bg);
+        color: #b45309;
+        border: 1px solid var(--yellow-border);
+        padding: 0.35rem 0.95rem;
         border-radius: var(--radius-pill);
-        padding: 0.4rem 0.9rem;
         font-size: 0.825rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: transform 0.15s ease, background 0.15s ease;
+        font-weight: 700;
+        margin-bottom: 1rem;
       }
 
-      .preset-chip:hover {
-        transform: translateY(-2px);
-        background: #e3ddff;
+      h1.hero-title {
+        font-size: clamp(2rem, 5vw, 2.75rem);
+        color: #1b4332;
+        margin-bottom: 0.85rem;
+        letter-spacing: -0.02em;
       }
 
-      /* Value Choice Buttons (Custom Cards) */
-      .value-options-grid {
+      p.hero-lead {
+        font-size: 1.05rem;
+        color: var(--text-body);
+        max-width: 560px;
+        margin: 0 auto 1.75rem;
+        line-height: 1.6;
+      }
+
+      /* 3 Benefit Boxes */
+      .benefits-row {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.85rem;
-        margin-bottom: 1.5rem;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.9rem;
+        margin-bottom: 1.75rem;
       }
 
-      @media (max-width: 520px) {
-        .value-options-grid {
+      @media (max-width: 680px) {
+        .benefits-row {
           grid-template-columns: 1fr;
         }
       }
 
-      .value-card-option {
-        background: #fafbfc;
-        border: 2px solid #e4e7eb;
-        border-radius: var(--radius-md);
-        padding: 1rem;
-        cursor: pointer;
-        transition: all 0.2s ease;
+      .benefit-box {
+        padding: 1.15rem;
+        border-radius: var(--radius-bubble);
         text-align: left;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
       }
 
-      .value-card-option:hover {
-        border-color: var(--primary-accent);
-        transform: translateY(-2px);
+      .benefit-mint {
+        background: var(--mint-bg);
+        border: 1px solid var(--mint-border);
       }
 
-      .value-card-option.selected {
-        border-color: var(--primary-accent);
-        background: var(--primary-light);
+      .benefit-pink {
+        background: var(--pink-bg);
+        border: 1px solid var(--pink-border);
       }
 
-      .value-card-option .option-title {
-        font-family: 'Fredoka', cursive;
-        font-size: 1.05rem;
-        color: var(--text-headline);
-        margin-bottom: 0.2rem;
+      .benefit-lavender {
+        background: var(--lavender-bg);
+        border: 1px solid var(--lavender-border);
       }
 
-      .value-card-option .option-desc {
-        font-size: 0.8rem;
-        color: #747d8c;
-      }
-
-      /* Buttons */
-      .btn-container {
+      .benefit-top-row {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        margin-top: 2rem;
-        gap: 1rem;
+        gap: 0.5rem;
       }
 
-      .btn {
+      .benefit-box h3 {
+        font-size: 0.95rem;
+        color: var(--text-headline);
+      }
+
+      .benefit-box p {
+        font-size: 0.825rem;
+        color: var(--text-body);
+        line-height: 1.45;
+      }
+
+      /* Pill Buttons */
+      .pill-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
-        font-family: 'Fredoka', cursive;
+        font-family: 'Quicksand', 'Plus Jakarta Sans', sans-serif;
         font-size: 1.05rem;
-        padding: 0.85rem 1.75rem;
+        font-weight: 700;
+        padding: 0.9rem 2.25rem;
         border-radius: var(--radius-pill);
         border: none;
         cursor: pointer;
-        transition: all 0.2s ease;
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+        text-decoration: none;
+        user-select: none;
       }
 
-      .btn-primary {
-        background: var(--primary-accent);
+      .pill-btn:active {
+        transform: scale(0.98);
+      }
+
+      .btn-mint {
+        background: var(--mint-btn);
         color: #ffffff;
-        box-shadow: 0 4px 14px rgba(108, 92, 231, 0.3);
+        box-shadow: 0 4px 14px rgba(76, 175, 80, 0.35);
       }
 
-      .btn-primary:hover {
-        background: var(--primary-hover);
-        transform: translateY(-2px);
+      .btn-mint:hover {
+        background: var(--mint-hover);
+        box-shadow: 0 6px 18px rgba(76, 175, 80, 0.45);
+        transform: translateY(-1px);
       }
 
-      .btn-secondary {
-        background: #f1f2f6;
-        color: #57606f;
+      .btn-outline {
+        background: #ffffff;
+        color: var(--text-body);
+        border: 2px solid #e2e8f0;
       }
 
-      .btn-secondary:hover {
-        background: #e4e7eb;
+      .btn-outline:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
       }
 
-      .btn-full {
-        width: 100%;
+      .btn-sm {
+        padding: 0.5rem 1.25rem;
+        font-size: 0.875rem;
       }
 
-      /* Output Step Layout */
-      .plan-header-badge {
-        background: var(--color-mint);
-        color: var(--color-mint-dark);
-        font-weight: 700;
-        font-size: 0.85rem;
-        padding: 0.35rem 0.85rem;
-        border-radius: var(--radius-pill);
+      .btn-group-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #f1ece4;
+      }
+
+      /* Step Headers */
+      .step-header-with-avatar {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .wizard-step-label {
         display: inline-block;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--mint-primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .wizard-title {
+        font-size: 1.55rem;
+        color: var(--text-headline);
+        margin-bottom: 0.35rem;
+      }
+
+      .wizard-subtitle {
+        font-size: 0.925rem;
+        color: var(--text-muted);
+      }
+
+      .input-field {
+        width: 100%;
+        font-family: inherit;
+        font-size: 1rem;
+        padding: 0.95rem 1.2rem;
+        border-radius: 16px;
+        border: 2px solid #ebdccb;
+        background: #ffffff;
+        color: var(--text-headline);
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .input-field:focus {
+        border-color: #81c784;
+        box-shadow: 0 0 0 4px rgba(129, 199, 132, 0.25);
+      }
+
+      .preset-heading {
+        font-size: 0.825rem;
+        font-weight: 600;
+        color: var(--text-muted);
         margin-bottom: 0.5rem;
       }
 
-      .plan-steps-container {
+      .preset-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .preset-pill {
+        background: #ffffff;
+        border: 1.5px solid #e2e8f0;
+        padding: 0.45rem 0.95rem;
+        border-radius: var(--radius-pill);
+        font-size: 0.825rem;
+        font-weight: 600;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+
+      .preset-pill:hover {
+        background: var(--yellow-bg);
+        border-color: var(--yellow-border);
+        color: #854d0e;
+        transform: translateY(-1px);
+      }
+
+      .category-selection-box {
+        background: #fdfbf7;
+        border: 1.5px solid #ebdccb;
+        border-radius: 18px;
+        padding: 1rem 1.25rem;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+      }
+
+      .category-meta h5 {
+        font-size: 0.875rem;
+        color: var(--text-headline);
+        margin-bottom: 0.15rem;
+      }
+
+      .category-meta p {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .category-select-pill {
+        font-family: inherit;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 0.45rem 1rem;
+        border-radius: var(--radius-pill);
+        border: 1.5px solid #cbd5e1;
+        background: #ffffff;
+        color: var(--text-headline);
+        cursor: pointer;
+        outline: none;
+      }
+
+      /* Step 2 Values Cards */
+      .values-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      @media (max-width: 600px) {
+        .values-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .value-card {
+        border-radius: 20px;
+        padding: 1.25rem;
+        border: 2px solid #e2e8f0;
+        background: #ffffff;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .value-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-soft);
+      }
+
+      .value-card.selected {
+        border-width: 2.5px;
+        transform: translateY(-2px);
+      }
+
+      .value-card[data-val="Peace of Mind"].selected {
+        background: #f1f8e9;
+        border-color: #81c784;
+      }
+
+      .value-card[data-val="Personal Growth"].selected {
+        background: var(--yellow-bg);
+        border-color: #ffd166;
+      }
+
+      .value-card[data-val="Financial Security"].selected {
+        background: var(--pink-bg);
+        border-color: #ffb3c1;
+      }
+
+      .value-card[data-val="Creative Freedom"].selected {
+        background: var(--lavender-bg);
+        border-color: #d8b4fe;
+      }
+
+      .value-top {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .value-card h4 {
+        font-size: 1.05rem;
+        color: var(--text-headline);
+      }
+
+      .value-card p {
+        font-size: 0.825rem;
+        color: var(--text-body);
+        line-height: 1.45;
+      }
+
+      .value-check-pill {
+        align-self: flex-end;
+        margin-top: 0.75rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 0.25rem 0.75rem;
+        border-radius: var(--radius-pill);
+        background: #f1f5f9;
+        color: var(--text-muted);
+        transition: all 0.15s ease;
+      }
+
+      .value-card.selected .value-check-pill {
+        background: #2e7d32;
+        color: #ffffff;
+      }
+
+      /* Focused Day Card */
+      .day-focus-bubble {
+        background: #ffffff;
+        border-radius: 24px;
+        border: 2px solid #ede4d5;
+        padding: 1.75rem 1.6rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .day-focus-bubble.is-checked {
+        border-color: #a5d6a7;
+        background: #fafffa;
+      }
+
+      .day-tag {
+        font-size: 0.825rem;
+        font-weight: 700;
+        padding: 0.3rem 0.95rem;
+        border-radius: var(--radius-pill);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      .day1-tag { background: var(--mint-bg); color: #2e7d32; }
+      .day2-tag { background: var(--yellow-bg); color: #b45309; }
+      .day3-tag { background: var(--pink-bg); color: #c2185b; }
+
+      .step-time {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-muted);
+      }
+
+      .step-instruction {
+        font-size: 0.95rem;
+        color: var(--text-body);
+        line-height: 1.55;
+        margin: 0.75rem 0 1.25rem;
+      }
+
+      .bubble-check-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        font-size: 0.925rem;
+        font-weight: 700;
+        color: var(--text-headline);
+        user-select: none;
+      }
+
+      .bubble-check-input {
+        width: 22px;
+        height: 22px;
+        accent-color: #4caf50;
+        cursor: pointer;
+      }
+
+      .step-grounding-tip {
+        margin-top: 1.25rem;
+        background: #faf7f2;
+        border-radius: 14px;
+        padding: 0.85rem 1rem;
+        font-size: 0.825rem;
+        color: var(--text-body);
+      }
+
+      .step-grounding-tip strong {
+        color: #1b4332;
+      }
+
+      /* INLINE DIRECT TOOL WRAPPERS (No drawers or hidden toggles) */
+      .inline-tool-container {
+        margin: 1.25rem 0;
+        background: #faf6f0;
+        border-radius: 20px;
+        border: 1.5px solid #ebdccb;
+        padding: 1.35rem 1.25rem;
+      }
+
+      .timer-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.85rem;
+        border-bottom: 1px dashed #e4d7c5;
+      }
+
+      .timer-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .timer-number {
+        font-family: 'Quicksand', monospace;
+        font-size: 2.35rem;
+        font-weight: 700;
+        color: #1b4332;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+
+      .timer-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .inline-notes-box {
+        margin-top: 0.85rem;
+      }
+
+      .inline-notes-label {
+        display: block;
+        font-size: 0.825rem;
+        font-weight: 700;
+        color: var(--text-headline);
+        margin-bottom: 0.35rem;
+      }
+
+      .inline-textarea {
+        width: 100%;
+        border-radius: 14px;
+        border: 1.5px solid #dcd3c4;
+        background: #ffffff;
+        padding: 0.85rem;
+        font-family: inherit;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        outline: none;
+        resize: vertical;
+        min-height: 85px;
+      }
+
+      .inline-textarea:focus {
+        border-color: #81c784;
+      }
+
+      /* Pros & Cons layout */
+      .pros-cons-wrap {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+      }
+
+      @media (max-width: 600px) {
+        .pros-cons-wrap {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .pros-cons-col h5 {
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-headline);
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      .scratchpad-item {
+        width: 100%;
+        font-family: inherit;
+        font-size: 0.85rem;
+        padding: 0.65rem 0.85rem;
+        border-radius: 12px;
+        border: 1.5px solid #dcd3c4;
+        background: #ffffff;
+        margin-bottom: 0.5rem;
+        outline: none;
+      }
+
+      .scratchpad-item:focus {
+        border-color: #81c784;
+      }
+
+      .outreach-box-bubble {
+        background: #ffffff;
+        border: 1.5px solid #e0d5c3;
+        border-radius: 14px;
+        padding: 1rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        margin-bottom: 0.75rem;
+        color: var(--text-body);
+      }
+
+      /* Nighttime Check-in Box on Each Day */
+      .night-checkin-card {
+        background: #ffffff;
+        border-radius: 24px;
+        border: 2px solid #ede4d5;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .night-header {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        margin-bottom: 1rem;
+      }
+
+      .night-header h4 {
+        font-size: 1.15rem;
+        color: #1b4332;
+        margin-bottom: 0.15rem;
+      }
+
+      .night-header p {
+        font-size: 0.825rem;
+        color: var(--text-muted);
+      }
+
+      .feel-pills-row {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+      }
+
+      @media (max-width: 640px) {
+        .feel-pills-row {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      .feel-pill-btn {
+        background: #fdfbf7;
+        border: 1.5px solid #e8decb;
+        border-radius: var(--radius-pill);
+        padding: 0.5rem 0.65rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-body);
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.15s ease;
+      }
+
+      .feel-pill-btn:hover {
+        background: var(--yellow-bg);
+        border-color: var(--yellow-border);
+      }
+
+      .feel-pill-btn.active {
+        background: var(--mint-bg);
+        border-color: var(--mint-border);
+        color: var(--mint-primary);
+        font-weight: 700;
+      }
+
+      .mistake-textarea {
+        width: 100%;
+        border-radius: 14px;
+        border: 1.5px solid #e8decb;
+        padding: 0.75rem 0.85rem;
+        font-family: inherit;
+        font-size: 0.85rem;
+        line-height: 1.45;
+        margin-bottom: 0.75rem;
+        outline: none;
+      }
+
+      .mistake-textarea:focus {
+        border-color: #81c784;
+      }
+
+      /* Review / Final Decision Screen */
+      .final-review-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         gap: 1rem;
         margin: 1.5rem 0;
       }
 
-      .plan-day-card {
-        border-radius: var(--radius-md);
-        padding: 1.25rem 1.5rem;
-        border: 2px solid transparent;
-        position: relative;
+      @media (max-width: 640px) {
+        .final-review-grid {
+          grid-template-columns: 1fr;
+        }
       }
 
-      .day-1-theme { background: var(--color-mint); color: #2d5a27; }
-      .day-2-theme { background: var(--color-yellow); color: #5c4308; }
-      .day-3-theme { background: var(--color-pink); color: #610d2b; }
-
-      .plan-day-card h4 {
-        font-size: 1.15rem;
-        margin-bottom: 0.3rem;
+      .summary-card {
+        background: #fdfbf7;
+        border: 1.5px solid #ebdccb;
+        border-radius: 18px;
+        padding: 1.15rem;
       }
 
-      .plan-day-card p {
-        font-size: 0.9rem;
-        line-height: 1.5;
-        opacity: 0.9;
+      .summary-card h5 {
+        font-size: 0.85rem;
+        color: #1b4332;
+        margin-bottom: 0.4rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
       }
 
-      /* Reflection Section inside output */
-      .reflection-box {
-        background: var(--color-lavender);
-        border-radius: var(--radius-md);
-        padding: 1.25rem 1.5rem;
-        margin-top: 1.5rem;
+      .summary-card p {
+        font-size: 0.85rem;
+        color: var(--text-body);
+        line-height: 1.45;
       }
 
-      .reflection-box h4 {
-        color: var(--color-lavender-dark);
-        font-size: 1.1rem;
+      /* Decision Options */
+      .decision-options {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        margin: 1.5rem 0;
+      }
+
+      .decision-btn {
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 1rem 1.25rem;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .decision-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-soft);
+      }
+
+      .decision-btn.active {
+        border-color: #81c784;
+        background: #f1f8e9;
+      }
+
+      .decision-emoji {
+        font-size: 1.6rem;
+        flex-shrink: 0;
+      }
+
+      .decision-btn h4 {
+        font-size: 1rem;
+        color: var(--text-headline);
+        margin-bottom: 0.15rem;
+      }
+
+      .decision-btn p {
+        font-size: 0.825rem;
+        color: var(--text-body);
+      }
+
+      /* Empowering Advice Box */
+      .empower-box {
+        background: var(--yellow-bg);
+        border: 2px solid var(--yellow-border);
+        border-radius: 22px;
+        padding: 1.5rem;
+        margin-top: 1.75rem;
+        display: none;
+      }
+
+      .empower-box.show {
+        display: block;
+        animation: screenFadeIn 0.3s ease-out forwards;
+      }
+
+      .empower-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
         margin-bottom: 0.5rem;
       }
 
-      .feel-buttons {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-top: 0.75rem;
+      .empower-header h3 {
+        font-size: 1.15rem;
+        color: #92400e;
       }
 
-      .feel-chip {
+      .empower-text {
+        font-size: 0.925rem;
+        color: #78350f;
+        line-height: 1.55;
+      }
+
+      /* Completion Tracker Top Bar */
+      .completion-tracker-bar {
         background: #ffffff;
-        border: 1px solid #dcd6f7;
-        border-radius: var(--radius-pill);
-        padding: 0.4rem 0.85rem;
-        font-size: 0.825rem;
-        cursor: pointer;
-        color: var(--color-lavender-dark);
-        font-weight: 600;
-        transition: all 0.15s ease;
+        border: 1.5px solid rgba(200, 230, 201, 0.95);
+        border-radius: var(--radius-bubble);
+        padding: 0.9rem 1.2rem;
+        margin-bottom: 1.35rem;
+        box-shadow: 0 4px 18px rgba(148, 163, 184, 0.1);
+        display: none;
+        animation: screenFadeIn 0.25s ease-out forwards;
       }
 
-      .feel-chip:hover, .feel-chip.selected {
-        background: var(--primary-accent);
+      .tracker-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.65rem;
+      }
+
+      .tracker-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-weight: 700;
+        font-size: 0.925rem;
+        color: var(--text-headline);
+      }
+
+      .tracker-icon {
+        font-size: 1.15rem;
+      }
+
+      .tracker-stat {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .tracker-count-text {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+
+      .tracker-percent-pill {
+        background: var(--mint-bg);
+        border: 1px solid var(--mint-border);
+        color: var(--mint-primary);
+        font-weight: 700;
+        font-size: 0.75rem;
+        padding: 0.15rem 0.6rem;
+        border-radius: var(--radius-pill);
+      }
+
+      /* Animated Progress Bar */
+      .tracker-bar-track {
+        width: 100%;
+        height: 9px;
+        background: #f1f5f9;
+        border-radius: var(--radius-pill);
+        overflow: hidden;
+        margin-bottom: 0.75rem;
+      }
+
+      .tracker-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #4caf50, #81c784, #ffd54f);
+        border-radius: var(--radius-pill);
+        transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .tracker-chips {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+      }
+
+      .tracker-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.25rem 0.65rem;
+        border-radius: var(--radius-pill);
+        font-size: 0.725rem;
+        font-weight: 600;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .tracker-chip:hover {
+        border-color: #cbd5e1;
+        background: #f1f5f9;
+      }
+
+      .tracker-chip.done {
+        background: var(--mint-bg);
+        border-color: var(--mint-border);
+        color: var(--mint-primary);
+        font-weight: 700;
+      }
+
+      .tchip-icon {
+        font-size: 0.75rem;
+      }
+
+      /* Completion Card on Review Screen */
+      .completion-card {
+        background: #ffffff;
+        border: 2px solid #e2ece1;
+        border-radius: var(--radius-bubble);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 6px 22px rgba(76, 175, 80, 0.08);
+      }
+
+      .completion-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .completion-header-left {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .completion-trophy {
+        font-size: 2rem;
+        line-height: 1;
+      }
+
+      .completion-title {
+        font-size: 1.15rem;
+        color: var(--text-headline);
+        margin-bottom: 0.15rem;
+      }
+
+      .completion-sub {
+        font-size: 0.825rem;
+        color: var(--text-muted);
+      }
+
+      .completion-score-badge {
+        background: var(--mint-bg);
+        border: 1.5px solid var(--mint-border);
+        color: var(--mint-primary);
+        font-weight: 700;
+        font-size: 0.85rem;
+        padding: 0.35rem 0.9rem;
+        border-radius: var(--radius-pill);
+      }
+
+      .completion-checklist {
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+        margin-top: 1rem;
+      }
+
+      .check-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.55rem 0.85rem;
+        border-radius: 12px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        transition: all 0.25s ease;
+      }
+
+      .check-item.done {
+        background: #f0fdf4;
+        border-color: #bbf7d0;
+      }
+
+      .citem-left {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        font-size: 0.825rem;
+        color: var(--text-body);
+        font-weight: 500;
+      }
+
+      .check-item.done .citem-left {
+        font-weight: 600;
+        color: #166534;
+      }
+
+      .citem-status-icon {
+        width: 20px;
+        height: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 1.5px solid #cbd5e1;
+        font-size: 0.7rem;
+        color: #94a3b8;
+        flex-shrink: 0;
+      }
+
+      .check-item.done .citem-status-icon {
+        background: #4caf50;
+        border-color: #2e7d32;
         color: #ffffff;
       }
 
+      .citem-pill {
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 0.2rem 0.65rem;
+        border-radius: var(--radius-pill);
+        background: #e2e8f0;
+        color: var(--text-muted);
+        flex-shrink: 0;
+      }
+
+      .check-item.done .citem-pill {
+        background: #dcfce7;
+        color: #15803d;
+      }
+
+      .completion-banner-100 {
+        margin-top: 1.15rem;
+        background: #fefce8;
+        border: 1.5px dashed #facc15;
+        border-radius: 16px;
+        padding: 1rem 1.15rem;
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        animation: screenFadeIn 0.3s ease-out forwards;
+      }
+
+      .completion-banner-100 strong {
+        color: #854d0e;
+        display: block;
+        font-size: 0.95rem;
+        margin-bottom: 0.15rem;
+      }
+
+      .completion-banner-100 p {
+        color: #a16207;
+        font-size: 0.825rem;
+        line-height: 1.4;
+      }
+
+      .replay-confetti-btn {
+        background: #ffffff;
+        border: 1.5px solid #cbd5e1;
+        border-radius: var(--radius-pill);
+        padding: 0.45rem 1.1rem;
+        font-size: 0.825rem;
+        font-weight: 600;
+        color: var(--text-body);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        transition: all 0.15s ease;
+        margin-top: 0.9rem;
+      }
+
+      .replay-confetti-btn:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+        transform: translateY(-1px);
+      }
+
+      /* PDF Export Card */
+      .pdf-export-card {
+        background: #fdfbf7;
+        border: 2px dashed #c8e6c9;
+        border-radius: var(--radius-bubble);
+        padding: 1.15rem 1.4rem;
+        margin: 1.5rem 0 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .pdf-card-left {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+      }
+
+      .pdf-card-icon {
+        font-size: 1.75rem;
+      }
+
+      .pdf-card-left h4 {
+        font-size: 1rem;
+        color: var(--text-headline);
+        margin-bottom: 0.15rem;
+      }
+
+      .pdf-card-left p {
+        font-size: 0.825rem;
+        color: var(--text-muted);
+      }
+
+      /* Toast Notification */
+      .toast-bubble {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: #1e293b;
+        color: #ffffff;
+        padding: 0.75rem 1.35rem;
+        border-radius: var(--radius-pill);
+        font-size: 0.875rem;
+        font-weight: 600;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        display: none;
+        z-index: 1000;
+      }
+
+      .toast-bubble.show {
+        display: block;
+        animation: popUp 0.2s ease-out;
+      }
+
+      @keyframes popUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* Footer */
       footer {
         text-align: center;
-        margin-top: 2rem;
-        font-size: 0.8rem;
-        color: #a4b0be;
+        padding: 2rem 1rem 1rem;
+        font-size: 0.825rem;
+        color: var(--text-muted);
       }
     </style>
   </head>
   <body>
-    <div class="app-container">
-      <!-- Top Brand Tag -->
-      <div class="top-brand">
-        <div class="brand-badge">
-          ✨ Unstuck: The Micro-Step Planner
+    <div class="app-wrapper">
+      <!-- Top Navigation -->
+      <nav class="top-nav">
+        <div class="brand-pill" id="nav-brand-btn" title="Back to Start">
+          <!-- Cute Sprout Mascot Mark -->
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" class="mascot-svg" aria-hidden="true">
+            <circle cx="16" cy="18" r="11" fill="#c8e6c9" />
+            <circle cx="16" cy="18" r="10" fill="#a5d6a7" />
+            <path d="M12 18Q13.5 16 15 18" stroke="#1b4332" stroke-width="2" stroke-linecap="round" fill="none" />
+            <path d="M17 18Q18.5 16 20 18" stroke="#1b4332" stroke-width="2" stroke-linecap="round" fill="none" />
+            <path d="M14.5 21Q16 22.5 17.5 21" stroke="#1b4332" stroke-width="1.8" stroke-linecap="round" fill="none" />
+            <circle cx="11.5" cy="20" r="1.8" fill="#ffab91" opacity="0.8" />
+            <circle cx="20.5" cy="20" r="1.8" fill="#ffab91" opacity="0.8" />
+            <path d="M16 8C16 8 13 4 9 6C9 10 13 9.5 16 9" fill="#4caf50" stroke="#2e7d32" stroke-width="1.2" />
+            <path d="M16 8C16 8 19 4 23 6C23 10 19 9.5 16 9" fill="#66bb6a" stroke="#2e7d32" stroke-width="1.2" />
+            <path d="M16 8V12" stroke="#2e7d32" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          <span>Unstuck</span>
+        </div>
+
+        <button type="button" class="restart-btn" id="nav-reset-btn">
+          <span>Start Fresh</span>
+        </button>
+      </nav>
+
+      <!-- Multi-Step Wizard Indicator -->
+      <div class="wizard-stepper" id="wizard-stepper">
+        <div class="step-dot" id="dot-step1">
+          <span>1. The Choice</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-dot" id="dot-step2">
+          <span>2. Value</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-dot" id="dot-day1">
+          <span>3. Day 1</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-dot" id="dot-day2">
+          <span>4. Day 2</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-dot" id="dot-day3">
+          <span>5. Day 3</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-dot" id="dot-final">
+          <span>6. Review</span>
         </div>
       </div>
 
-      <!-- STEP 0: LANDING PAGE -->
-      <div class="step-card active" id="card-step-0">
-        <div class="landing-hero">
-          <span class="landing-emoji">🌱</span>
-          <h1>Let's Get Unstuck Together</h1>
-          <p>
-            Overthinking happens when choices feel permanent. We turn overwhelming choices into gentle, low-risk 3-day experiments so you can take action without fear.
-          </p>
-
-          <div class="theory-mini-pill">
-            <strong>Grounded in Carl Rogers' Self-Concept Theory</strong>
-            Testing tiny 3-day actions bridges the gap between where you feel stuck today and your proactive ideal self.
+      <!-- Micro-Step Completion Tracker Bar -->
+      <div class="completion-tracker-bar" id="completion-tracker-bar">
+        <div class="tracker-header">
+          <div class="tracker-title-wrap">
+            <span class="tracker-icon">🌱</span>
+            <span class="tracker-title">Completion Tracker</span>
           </div>
-
-          <button type="button" class="btn btn-primary btn-full" onclick="goToStep(1)">
-            <span>Let's Get Unstuck Together!</span>
-            <span>✨</span>
+          <div class="tracker-stat">
+            <span class="tracker-count-text" id="tracker-count-text">0 of 7 steps done</span>
+            <span class="tracker-percent-pill" id="tracker-percent-pill">0%</span>
+          </div>
+        </div>
+        <div class="tracker-bar-track">
+          <div class="tracker-bar-fill" id="tracker-bar-fill" style="width: 0%;"></div>
+        </div>
+        <div class="tracker-chips" id="tracker-chips-list">
+          <button type="button" class="tracker-chip" id="tchip-day1-step" data-target="day1">
+            <span class="tchip-icon">○</span> Day 1 Action
+          </button>
+          <button type="button" class="tracker-chip" id="tchip-day1-check" data-target="day1">
+            <span class="tchip-icon">○</span> Day 1 Night
+          </button>
+          <button type="button" class="tracker-chip" id="tchip-day2-step" data-target="day2">
+            <span class="tchip-icon">○</span> Day 2 Action
+          </button>
+          <button type="button" class="tracker-chip" id="tchip-day2-check" data-target="day2">
+            <span class="tchip-icon">○</span> Day 2 Night
+          </button>
+          <button type="button" class="tracker-chip" id="tchip-day3-step" data-target="day3">
+            <span class="tchip-icon">○</span> Day 3 Action
+          </button>
+          <button type="button" class="tracker-chip" id="tchip-day3-check" data-target="day3">
+            <span class="tchip-icon">○</span> Day 3 Night
+          </button>
+          <button type="button" class="tracker-chip" id="tchip-final-dec" data-target="final">
+            <span class="tchip-icon">○</span> Final Call
           </button>
         </div>
       </div>
 
-      <!-- STEP 1: QUESTION 1 (THE CHOICE) -->
-      <div class="step-card" id="card-step-1">
-        <div class="progress-bar-container">
-          <div class="progress-dot active"></div>
-          <div class="progress-dot"></div>
-        </div>
+      <!-- SCREEN 0: LANDING PAGE -->
+      <section class="wizard-screen active" id="screen-landing">
+        <div class="cute-card">
+          <div class="landing-hero">
+            <div class="mascot-hero-wrap">
+              <!-- Big Smiling Sprout with glowing cheek blushes -->
+              <svg width="115" height="115" viewBox="0 0 100 100" fill="none" class="mascot-svg" aria-hidden="true">
+                <ellipse cx="50" cy="90" rx="34" ry="7" fill="#ebdccb" />
+                <circle cx="50" cy="54" r="34" fill="#c8e6c9" />
+                <circle cx="50" cy="54" r="31" fill="#a5d6a7" />
+                <ellipse cx="50" cy="62" rx="20" ry="15" fill="#e8f5e9" opacity="0.9" />
+                <path d="M38 48Q42 42 46 48" stroke="#1b4332" stroke-width="3" stroke-linecap="round" fill="none" />
+                <path d="M54 48Q58 42 62 48" stroke="#1b4332" stroke-width="3" stroke-linecap="round" fill="none" />
+                <path d="M45 56Q50 61 55 56" stroke="#1b4332" stroke-width="2.5" stroke-linecap="round" fill="none" />
+                <circle cx="34" cy="54" r="5" fill="#ffab91" opacity="0.75" />
+                <circle cx="66" cy="54" r="5" fill="#ffab91" opacity="0.75" />
+                <path d="M78 54Q86 46 88 38" stroke="#2e7d32" stroke-width="4" stroke-linecap="round" />
+                <circle cx="89" cy="38" r="4" fill="#a5d6a7" stroke="#2e7d32" stroke-width="1.5" />
+                <path d="M50 24C50 24 40 12 28 17C28 27 40 27 50 25" fill="#4caf50" stroke="#2e7d32" stroke-width="2" />
+                <path d="M50 24C50 24 60 12 72 17C72 27 60 27 50 25" fill="#81c784" stroke="#2e7d32" stroke-width="2" />
+                <path d="M50 24V32" stroke="#2e7d32" stroke-width="3.5" stroke-linecap="round" />
+              </svg>
+            </div>
 
-        <div class="question-number">Step 1 of 2</div>
-        <h2 class="question-title">What choice is making you feel stuck?</h2>
-        <p class="question-subtitle">Name the decision or situation that is keeping you up at night.</p>
+            <div class="badge-tag">
+              <span>🌱 3-Day Step-by-Step Test Run</span>
+            </div>
+            <h1 class="hero-title">Stop overthinking and get unstuck.</h1>
+            <p class="hero-lead">
+              Big choices feel scary when they feel forever. We walk you through one tiny, low-stress step each day, with a quick night check-in, then help you review your thoughts with calm confidence.
+            </p>
 
-        <input
-          type="text"
-          id="choice-input"
-          placeholder="e.g., Choosing a major, starting a project..."
-          autocomplete="off"
-        />
+            <div class="benefits-row">
+              <div class="benefit-box benefit-mint">
+                <div class="benefit-top-row">
+                  <span style="font-size: 1.25rem;">⏱️</span>
+                  <h3>Day 1: 10-Minute Look</h3>
+                </div>
+                <p>Run your 10-minute timer on the page and jot down the facts you find.</p>
+              </div>
+              <div class="benefit-box benefit-pink">
+                <div class="benefit-top-row">
+                  <span style="font-size: 1.25rem;">💬</span>
+                  <h3>Day 2: Ask or Jot</h3>
+                </div>
+                <p>Jot 3 quick likes or worries right on the card, or copy a quick text.</p>
+              </div>
+              <div class="benefit-box benefit-lavender">
+                <div class="benefit-top-row">
+                  <span style="font-size: 1.25rem;">🎨</span>
+                  <h3>Day 3: Messy Try</h3>
+                </div>
+                <p>Run your 15-minute timer and type a messy draft right into the pad.</p>
+              </div>
+            </div>
 
-        <div class="presets-grid">
-          <button type="button" class="preset-chip" onclick="setPreset('Choosing a college major')">🎓 Choosing a major</button>
-          <button type="button" class="preset-chip" onclick="setPreset('Starting a term paper')">📝 Starting a paper</button>
-          <button type="button" class="preset-chip" onclick="setPreset('Applying for internships')">💼 Internships</button>
-          <button type="button" class="preset-chip" onclick="setPreset('Starting a creative project')">🎨 Creative project</button>
-        </div>
+            <div class="character-banner">
+              <div style="flex-shrink: 0;">
+                <svg width="48" height="48" viewBox="0 0 60 60" fill="none" aria-hidden="true">
+                  <circle cx="30" cy="30" r="28" fill="#fff9db" stroke="#ffe066" stroke-width="2" />
+                  <circle cx="30" cy="30" r="22" fill="#ffd166" />
+                  <path d="M22 28Q25 24 28 28" stroke="#78350f" stroke-width="2.5" stroke-linecap="round" />
+                  <path d="M32 28Q35 24 38 28" stroke="#78350f" stroke-width="2.5" stroke-linecap="round" />
+                  <path d="M26 35Q30 39 34 35" stroke="#78350f" stroke-width="2" stroke-linecap="round" />
+                  <circle cx="21" cy="32" r="3" fill="#fb923c" opacity="0.6" />
+                  <circle cx="39" cy="32" r="3" fill="#fb923c" opacity="0.6" />
+                </svg>
+              </div>
+              <div class="character-banner-text">
+                <h4>A Kind Tip from Psychologist Carl Rogers</h4>
+                <p>
+                  We freeze when we think we must be perfect. When you accept where you are right now (mistakes and all), taking a small step suddenly feels light and doable.
+                </p>
+              </div>
+            </div>
 
-        <div class="btn-container">
-          <button type="button" class="btn btn-secondary" onclick="goToStep(0)">Back</button>
-          <button type="button" class="btn btn-primary" onclick="validateStep1()">Next Step ➔</button>
-        </div>
-      </div>
-
-      <!-- STEP 2: QUESTION 2 (THE CORE VALUE) -->
-      <div class="step-card" id="card-step-2">
-        <div class="progress-bar-container">
-          <div class="progress-dot active"></div>
-          <div class="progress-dot active"></div>
-        </div>
-
-        <div class="question-number">Step 2 of 2</div>
-        <h2 class="question-title">What core value matters most right now?</h2>
-        <p class="question-subtitle">Pick one anchor value to guide your 3-day micro-plan.</p>
-
-        <div class="value-options-grid">
-          <div class="value-card-option selected" onclick="selectValue(this, 'Peace of Mind')">
-            <div class="option-title">☮️ Peace of Mind</div>
-            <div class="option-desc">Calm clarity and reduced daily anxiety.</div>
-          </div>
-          <div class="value-card-option" onclick="selectValue(this, 'Personal Growth')">
-            <div class="option-title">🚀 Personal Growth</div>
-            <div class="option-desc">Curiosity, learning, and expanding horizons.</div>
-          </div>
-          <div class="value-card-option" onclick="selectValue(this, 'Financial Security')">
-            <div class="option-title">💡 Financial Security</div>
-            <div class="option-desc">Stability, safety, and sustainable choices.</div>
-          </div>
-          <div class="value-card-option" onclick="selectValue(this, 'Creative Freedom')">
-            <div class="option-title">🎨 Creative Freedom</div>
-            <div class="option-desc">Self-expression, originality, and autonomy.</div>
-          </div>
-        </div>
-
-        <div class="btn-container">
-          <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Back</button>
-          <button type="button" class="btn btn-primary" onclick="generatePlan()">Break It Down 🎉</button>
-        </div>
-      </div>
-
-      <!-- STEP 3: THE 3-DAY EXPERIMENT PLAN OUTPUT -->
-      <div class="step-card" id="card-step-3">
-        <span class="plan-header-badge" id="display-value">Anchor Value: Peace of Mind</span>
-        <h2 class="question-title" id="display-choice">Your 3-Day Micro-Experiment</h2>
-        <p class="question-subtitle">Remember: You are not making a final lifetime decision. You are only collecting data.</p>
-
-        <div class="plan-steps-container">
-          <!-- Day 1 -->
-          <div class="plan-day-card day-1-theme">
-            <h4>Day 1: Low-Effort Research (10 Mins)</h4>
-            <p id="day-1-text">Watch 1 casual video or read 1 short overview article about this option. Stop when your 10-minute timer dings!</p>
-          </div>
-
-          <!-- Day 2 -->
-          <div class="plan-day-card day-2-theme">
-            <h4>Day 2: Quick Micro-Consultation</h4>
-            <p id="day-2-text">Write down 3 quick pros and 3 quick cons, or send a brief 2-sentence note to someone who has done this before.</p>
-          </div>
-
-          <!-- Day 3 -->
-          <div class="plan-day-card day-3-theme">
-            <h4>Day 3: Low-Stakes 15-Minute Draft</h4>
-            <p id="day-3-text">Spend 15 minutes working on a rough, messy draft or initial step. Perfection is completely forbidden!</p>
+            <div>
+              <button type="button" class="pill-btn btn-mint" id="start-wizard-btn" onclick="setScreen('step1')">
+                <span>Start Your Micro-Plan</span>
+                <span aria-hidden="true">→</span>
+              </button>
+            </div>
           </div>
         </div>
+      </section>
 
-        <!-- Evening Reflection Tracker -->
-        <div class="reflection-box">
-          <h4>🌙 Evening Self-Trust Check-in</h4>
-          <p style="font-size:0.85rem; color:#57606f;">How did trying this experiment make you feel today?</p>
-          <div class="feel-buttons">
-            <button type="button" class="feel-chip" onclick="selectFeel(this)">Relieved</button>
-            <button type="button" class="feel-chip" onclick="selectFeel(this)">Proud of starting</button>
-            <button type="button" class="feel-chip" onclick="selectFeel(this)">Still a bit unsure</button>
-            <button type="button" class="feel-chip" onclick="selectFeel(this)">Learned something new</button>
+      <!-- SCREEN 1: STEP 1 - INPUT CHOICE -->
+      <section class="wizard-screen" id="screen-step1">
+        <div class="cute-card">
+          <div class="step-header-with-avatar">
+            <!-- Sprout writing in a tiny notebook -->
+            <svg width="60" height="60" viewBox="0 0 64 64" fill="none" class="mascot-svg" aria-hidden="true">
+              <circle cx="32" cy="34" r="24" fill="#c8e6c9" />
+              <circle cx="32" cy="34" r="21" fill="#a5d6a7" />
+              <!-- Curious thinking face -->
+              <circle cx="26" cy="32" r="2.5" fill="#1b4332" />
+              <circle cx="38" cy="32" r="2.5" fill="#1b4332" />
+              <ellipse cx="32" cy="38" rx="2.5" ry="1.8" fill="#1b4332" />
+              <circle cx="22" cy="35" r="2.5" fill="#ffab91" opacity="0.8" />
+              <circle cx="42" cy="35" r="2.5" fill="#ffab91" opacity="0.8" />
+              <!-- Tiny pencil in hand -->
+              <rect x="42" y="24" width="5" height="15" rx="2" transform="rotate(30 42 24)" fill="#ffd166" stroke="#b45309" stroke-width="1.2" />
+              <polygon points="50,38 48,42 45,39" fill="#1b4332" />
+              <!-- Top sprout leaf -->
+              <path d="M32 10C32 10 26 3 18 6C18 12 26 12 32 11" fill="#4caf50" stroke="#2e7d32" stroke-width="1.5" />
+              <path d="M32 10C32 10 38 3 46 6C46 12 38 12 32 11" fill="#81c784" stroke="#2e7d32" stroke-width="1.5" />
+              <path d="M32 10V15" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+            <div>
+              <span class="wizard-step-label">Step 1</span>
+              <h2 class="wizard-title">What choice is stuck in your head?</h2>
+              <p class="wizard-subtitle">
+                Type what is stressing you out. You do not have to solve it today, just write it down.
+              </p>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 1.25rem;">
+            <input
+              type="text"
+              id="wizard-choice-input"
+              class="input-field"
+              placeholder="e.g., Buying an expensive phone, picking a major, starting a paper..."
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="preset-section">
+            <div class="preset-heading">Tap one to fill in quickly:</div>
+            <div class="preset-pills">
+              <button type="button" class="preset-pill" data-text="Buying an expensive new phone" data-cat="purchase">
+                📱 Buying an expensive phone
+              </button>
+              <button type="button" class="preset-pill" data-text="Choosing between two college majors" data-cat="career">
+                🎓 Picking a major
+              </button>
+              <button type="button" class="preset-pill" data-text="Starting my final term paper" data-cat="project">
+                📝 Writing a term paper
+              </button>
+              <button type="button" class="preset-pill" data-text="Applying for summer internships" data-cat="career">
+                💼 Applying for internships
+              </button>
+              <button type="button" class="preset-pill" data-text="Moving into a new apartment" data-cat="lifestyle">
+                📦 Moving to a new place
+              </button>
+            </div>
+          </div>
+
+          <div class="category-selection-box">
+            <div class="category-meta">
+              <h5>Choice Category:</h5>
+              <p id="category-description">We tune your steps so they match what you are doing</p>
+            </div>
+            <select id="wizard-category-select" class="category-select-pill">
+              <option value="purchase">Buying Something or Spending Money</option>
+              <option value="career">School, College, or Career</option>
+              <option value="project">Creative Project or Writing</option>
+              <option value="social">Friend, Roommate, or Family Talk</option>
+              <option value="lifestyle">Daily Routine or Moving</option>
+              <option value="general">General Crossroad or Life Choice</option>
+            </select>
+          </div>
+
+          <div class="btn-group-nav">
+            <button type="button" class="pill-btn btn-outline btn-sm" id="step1-back-btn">
+              <span>← Back</span>
+            </button>
+            <button type="button" class="pill-btn btn-mint btn-sm" id="step1-next-btn">
+              <span>Next: What Matters Most →</span>
+            </button>
           </div>
         </div>
+      </section>
 
-        <div class="btn-container">
-          <button type="button" class="btn btn-secondary btn-full" onclick="goToStep(0)">Start Another Choice</button>
+      <!-- SCREEN 2: STEP 2 - PICK CORE VALUE -->
+      <section class="wizard-screen" id="screen-step2">
+        <div class="cute-card">
+          <div class="step-header-with-avatar">
+            <!-- Sprout with a warm glowing heart / star -->
+            <svg width="60" height="60" viewBox="0 0 64 64" fill="none" class="mascot-svg" aria-hidden="true">
+              <circle cx="32" cy="34" r="24" fill="#c8e6c9" />
+              <circle cx="32" cy="34" r="21" fill="#a5d6a7" />
+              <path d="M24 30Q27 26 30 30" stroke="#1b4332" stroke-width="2.5" stroke-linecap="round" />
+              <path d="M34 30Q37 26 40 30" stroke="#1b4332" stroke-width="2.5" stroke-linecap="round" />
+              <path d="M28 37Q32 40 36 37" stroke="#1b4332" stroke-width="2" stroke-linecap="round" />
+              <circle cx="21" cy="34" r="2.5" fill="#ffab91" opacity="0.8" />
+              <circle cx="43" cy="34" r="2.5" fill="#ffab91" opacity="0.8" />
+              <!-- Star held in hands -->
+              <polygon points="50,16 52,21 57,21 53,24 55,29 50,26 45,29 47,24 43,21 48,21" fill="#ffd166" stroke="#f59f00" stroke-width="1.5" />
+              <!-- Top sprout leaf -->
+              <path d="M32 10C32 10 26 3 18 6C18 12 26 12 32 11" fill="#4caf50" stroke="#2e7d32" stroke-width="1.5" />
+              <path d="M32 10C32 10 38 3 46 6C46 12 38 12 32 11" fill="#81c784" stroke="#2e7d32" stroke-width="1.5" />
+              <path d="M32 10V15" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+            <div>
+              <span class="wizard-step-label">Step 2</span>
+              <h2 class="wizard-title">What matters most to your heart right now?</h2>
+              <p class="wizard-subtitle">
+                Pick the main feeling you want over the next three days.
+              </p>
+            </div>
+          </div>
+
+          <div class="values-grid">
+            <div class="value-card selected" data-val="Peace of Mind">
+              <div>
+                <div class="value-top">
+                  <span style="font-size: 1.35rem;">🍃</span>
+                  <h4>Peace of Mind</h4>
+                </div>
+                <p>Less stress, quiet thoughts, and breathing room.</p>
+              </div>
+              <div class="value-check-pill">Selected</div>
+            </div>
+
+            <div class="value-card" data-val="Personal Growth">
+              <div>
+                <div class="value-top">
+                  <span style="font-size: 1.35rem;">🌱</span>
+                  <h4>Personal Growth</h4>
+                </div>
+                <p>Trying something new and seeing what you learn.</p>
+              </div>
+              <div class="value-check-pill">Select</div>
+            </div>
+
+            <div class="value-card" data-val="Financial Security">
+              <div>
+                <div class="value-top">
+                  <span style="font-size: 1.35rem;">🛡️</span>
+                  <h4>Financial Security</h4>
+                </div>
+                <p>Keeping your money safe and making smart buys.</p>
+              </div>
+              <div class="value-check-pill">Select</div>
+            </div>
+
+            <div class="value-card" data-val="Creative Freedom">
+              <div>
+                <div class="value-top">
+                  <span style="font-size: 1.35rem;">🎨</span>
+                  <h4>Creative Freedom</h4>
+                </div>
+                <p>Doing things your own way and having fun.</p>
+              </div>
+              <div class="value-check-pill">Select</div>
+            </div>
+          </div>
+
+          <div class="btn-group-nav">
+            <button type="button" class="pill-btn btn-outline btn-sm" id="step2-back-btn">
+              <span>← Back</span>
+            </button>
+            <button type="button" class="pill-btn btn-mint btn-sm" id="step2-next-btn">
+              <span>Go to Day 1 ✨</span>
+            </button>
+          </div>
         </div>
-      </div>
+      </section>
 
+      <!-- SCREEN 3: DAY 1 FOCUSED SCREEN -->
+      <section class="wizard-screen" id="screen-day1">
+        <div class="cute-card">
+          <div class="step-header-with-avatar">
+            <!-- Sprout with magnifying glass -->
+            <svg width="60" height="60" viewBox="0 0 64 64" fill="none" class="mascot-svg" aria-hidden="true">
+              <circle cx="32" cy="34" r="24" fill="#c8e6c9" />
+              <circle cx="32" cy="34" r="21" fill="#a5d6a7" />
+              <path d="M25 30Q28 26 31 30" stroke="#1b4332" stroke-width="2.5" stroke-linecap="round" />
+              <path d="M35 30Q38 26 41 30" stroke="#1b4332" stroke-width="2.5" stroke-linecap="round" />
+              <path d="M29 36Q33 39 37 36" stroke="#1b4332" stroke-width="2" stroke-linecap="round" />
+              <circle cx="22" cy="34" r="2.5" fill="#ffab91" opacity="0.8" />
+              <circle cx="44" cy="34" r="2.5" fill="#ffab91" opacity="0.8" />
+              <!-- Magnifying glass held up -->
+              <circle cx="48" cy="22" r="8" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2" />
+              <line x1="43" y1="27" x2="38" y2="33" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" />
+              <!-- Sprout top leaf -->
+              <path d="M32 10C32 10 26 3 18 6C18 12 26 12 32 11" fill="#4caf50" stroke="#2e7d32" stroke-width="1.5" />
+              <path d="M32 10C32 10 38 3 46 6C46 12 38 12 32 11" fill="#81c784" stroke="#2e7d32" stroke-width="1.5" />
+              <path d="M32 10V15" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+            <div>
+              <span class="day-tag day1-tag">Day 1: Quick 10-Minute Peek</span>
+              <h2 class="wizard-title" style="margin-top: 0.25rem;">Only focus on today</h2>
+              <p class="wizard-subtitle" id="day1-choice-sub">Checking out your choice with zero pressure</p>
+            </div>
+          </div>
+
+          <!-- Day 1 Action Bubble -->
+          <div class="day-focus-bubble" id="bubble-day1">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 id="day1-card-title" style="font-size: 1.15rem; color: var(--text-headline);">10-minute simple check</h3>
+              <span class="step-time">⏱️ 10 minutes</span>
+            </div>
+            <p class="step-instruction" id="day1-card-desc">
+              Spend exactly 10 minutes checking the real details. Stop when the timer dings.
+            </p>
+
+            <!-- DIRECT INLINE 10-MIN TIMER (No toggle buttons needed) -->
+            <div class="inline-tool-container">
+              <div class="timer-row">
+                <div class="timer-left">
+                  <!-- Little clock mascot icon -->
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  <div class="timer-number" id="time-display-1">10:00</div>
+                </div>
+                <div class="timer-actions">
+                  <button type="button" class="pill-btn btn-mint btn-sm" id="btn-start-1">Start Timer</button>
+                  <button type="button" class="pill-btn btn-outline btn-sm" id="btn-pause-1">Pause</button>
+                  <button type="button" class="pill-btn btn-outline btn-sm" id="btn-reset-1">Reset</button>
+                </div>
+              </div>
+
+              <!-- Directly visible quick notes area for Day 1 -->
+              <div class="inline-notes-box">
+                <label class="inline-notes-label" for="day1-research-notes">
+                  Quick notes: What did you find during your 10 minutes?
+                </label>
+                <textarea
+                  id="day1-research-notes"
+                  class="inline-textarea"
+                  placeholder="e.g., Total cost is $899 with tax, or return policy gives me 30 days..."
+                ></textarea>
+              </div>
+            </div>
+
+            <div style="margin-top: 1rem;">
+              <label class="bubble-check-label">
+                <input type="checkbox" class="bubble-check-input" id="check-day-1" />
+                <span>I did my 10-minute peek</span>
+              </label>
+            </div>
+
+            <div class="step-grounding-tip" id="day1-card-tip">
+              <strong>Why this works:</strong> Stopping at 10 minutes keeps you from doomscrolling and shows you that looking at real facts is safe.
+            </div>
+          </div>
+
+          <!-- Day 1 Nighttime Check-in -->
+          <div class="night-checkin-card">
+            <div class="night-header">
+              <!-- Sleepy Sprout with moon -->
+              <svg width="44" height="44" viewBox="0 0 54 54" fill="none" aria-hidden="true" style="flex-shrink: 0;">
+                <circle cx="27" cy="27" r="25" fill="#ede7f6" />
+                <path d="M30 14C22 14 16 20 16 28C16 36 22 42 30 42C32 42 34 41 36 40C28 38 23 32 23 26C23 19 28 15 36 16C34 15 32 14 30 14Z" fill="#7e57c2" />
+                <path d="M22 27Q24 25 26 27" stroke="#ffffff" stroke-width="2" stroke-linecap="round" fill="none" />
+                <circle cx="21" cy="29" r="1.5" fill="#ffab91" />
+                <polygon points="38,22 39,25 42,25 39.5,27 40.5,30 38,28 35.5,30 36.5,27 34,25 37,25" fill="#ffd54f" />
+              </svg>
+              <div>
+                <h4>🌙 Day 1 Nighttime Check-in</h4>
+                <p>Check in with how taking action felt today.</p>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 0.75rem;">
+              <label style="display: block; font-size: 0.825rem; font-weight: 700; margin-bottom: 0.4rem;">
+                How did your body and mind feel after taking this step?
+              </label>
+              <div class="feel-pills-row" id="day1-feel-pills">
+                <button type="button" class="feel-pill-btn" data-feel="Lighter than expected">Lighter than expected</button>
+                <button type="button" class="feel-pill-btn" data-feel="A bit nervous but proud">A bit nervous but proud</button>
+                <button type="button" class="feel-pill-btn" data-feel="Happy to be moving">Happy to be moving</button>
+                <button type="button" class="feel-pill-btn" data-feel="Silly but harmless">Silly but harmless</button>
+              </div>
+            </div>
+
+            <div>
+              <label for="day1-mistake-input" style="display: block; font-size: 0.825rem; font-weight: 700; margin-bottom: 0.35rem;">
+                What is one small mistake or messy detail you let yourself be okay with today?
+              </label>
+              <textarea
+                id="day1-mistake-input"
+                class="mistake-textarea"
+                rows="2"
+                placeholder="e.g., I did not understand every single number, and I let that be okay..."
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="btn-group-nav">
+            <button type="button" class="pill-btn btn-outline btn-sm" id="day1-back-btn">
+              <span>← Back</span>
+            </button>
+            <button type="button" class="pill-btn btn-mint btn-sm" id="day1-next-btn">
+              <span>Ready for Day 2? →</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 4: DAY 2 FOCUSED SCREEN -->
+      <section class="wizard-screen" id="screen-day2">
+        <div class="cute-card">
+          <div class="step-header-with-avatar">
+            <!-- Sprout with envelope / message -->
+            <svg width="60" height="60" viewBox="0 0 64 64" fill="none" class="mascot-svg" aria-hidden="true">
+              <circle cx="32" cy="34" r="24" fill="#c8e6c9" />
+              <circle cx="32" cy="34" r="21" fill="#a5d6a7" />
+              <path d="M25 30Q28 26 31 30" stroke="#1b4332" stroke-width="2.5" stroke-linecap="round" />
+              <path d="M35 30Q38 26 41 30" stroke="#1b4332" stroke-width="2.5" stroke-linecap="round" />
+              <path d="M29 36Q33 39 37 36" stroke="#1b4332" stroke-width="2" stroke-linecap="round" />
+              <circle cx="22" cy="34" r="2.5" fill="#ffab91" opacity="0.8" />
+              <circle cx="44" cy="34" r="2.5" fill="#ffab91" opacity="0.8" />
+              <!-- Cute letter / card in hand -->
+              <rect x="42" y="24" width="16" height="12" rx="2" fill="#fff9db" stroke="#b45309" stroke-width="1.5" />
+              <path d="M42 25L50 31L58 25" stroke="#b45309" stroke-width="1.5" fill="none" />
+              <!-- Top sprout leaf -->
+              <path d="M32 10C32 10 26 3 18 6C18 12 26 12 32 11" fill="#4caf50" stroke="#2e7d32" stroke-width="1.5" />
+              <path d="M32 10C32 10 38 3 46 6C46 12 38 12 32 11" fill="#81c784" stroke="#2e7d32" stroke-width="1.5" />
+              <path d="M32 10V15" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+            <div>
+              <span class="day-tag day2-tag">Day 2: Ask or Jot</span>
+              <h2 class="wizard-title" style="margin-top: 0.25rem;">Clearing thoughts out of your head</h2>
+              <p class="wizard-subtitle" id="day2-choice-sub">Writing things down stops endless loops</p>
+            </div>
+          </div>
+
+          <!-- Day 2 Action Bubble -->
+          <div class="day-focus-bubble" id="bubble-day2">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 id="day2-card-title" style="font-size: 1.15rem; color: var(--text-headline);">Write 3 points or ask 1 person</h3>
+              <span class="step-time">📝 3 Points or 1 Message</span>
+            </div>
+            <p class="step-instruction" id="day2-card-desc">
+              Write down 3 quick likes and dislikes, or send a quick 2-sentence note to someone who knows.
+            </p>
+
+            <!-- DIRECT INLINE SCRATCHPAD & MESSAGE (No toggle buttons needed) -->
+            <div class="inline-tool-container">
+              <div class="pros-cons-wrap">
+                <div class="pros-cons-col">
+                  <h5><span>✨</span> 3 Quick Likes (Pros)</h5>
+                  <input type="text" class="scratchpad-item" placeholder="Good thing 1" id="pad-pro-1" />
+                  <input type="text" class="scratchpad-item" placeholder="Good thing 2" id="pad-pro-2" />
+                  <input type="text" class="scratchpad-item" placeholder="Good thing 3" id="pad-pro-3" />
+                </div>
+                <div class="pros-cons-col">
+                  <h5><span>💭</span> 3 Quick Worries (Cons)</h5>
+                  <input type="text" class="scratchpad-item" placeholder="Worry 1" id="pad-con-1" />
+                  <input type="text" class="scratchpad-item" placeholder="Worry 2" id="pad-con-2" />
+                  <input type="text" class="scratchpad-item" placeholder="Worry 3" id="pad-con-3" />
+                </div>
+              </div>
+
+              <div>
+                <h5 style="font-size: 0.85rem; margin-bottom: 0.4rem; color: var(--text-headline);">
+                  Or send this quick message to 1 friend:
+                </h5>
+                <div class="outreach-box-bubble" id="outreach-text-content">
+                  "Hey! I am thinking about this choice and remembered you tried it. If you have two minutes sometime, did you feel it was worth it?"
+                </div>
+                <button type="button" class="pill-btn btn-outline btn-sm" id="copy-outreach-btn">
+                  <span>Copy Text</span>
+                </button>
+              </div>
+            </div>
+
+            <div style="margin-top: 1rem;">
+              <label class="bubble-check-label">
+                <input type="checkbox" class="bubble-check-input" id="check-day-2" />
+                <span>I did my jot or message</span>
+              </label>
+            </div>
+
+            <div class="step-grounding-tip" id="day2-card-tip">
+              <strong>Why this works:</strong> Writing your worries on paper gets them out of your head so they stop looping in circles.
+            </div>
+          </div>
+
+          <!-- Day 2 Nighttime Check-in -->
+          <div class="night-checkin-card">
+            <div class="night-header">
+              <!-- Sleepy Sprout with moon -->
+              <svg width="44" height="44" viewBox="0 0 54 54" fill="none" aria-hidden="true" style="flex-shrink: 0;">
+                <circle cx="27" cy="27" r="25" fill="#ede7f6" />
+                <path d="M30 14C22 14 16 20 16 28C16 36 22 42 30 42C32 42 34 41 36 40C28 38 23 32 23 26C23 19 28 15 36 16C34 15 32 14 30 14Z" fill="#7e57c2" />
+                <path d="M22 27Q24 25 26 27" stroke="#ffffff" stroke-width="2" stroke-linecap="round" fill="none" />
+                <circle cx="21" cy="29" r="1.5" fill="#ffab91" />
+                <polygon points="38,22 39,25 42,25 39.5,27 40.5,30 38,28 35.5,30 36.5,27 34,25 37,25" fill="#ffd54f" />
+              </svg>
+              <div>
+                <h4>🌙 Day 2 Nighttime Check-in</h4>
+                <p>Check in with how Day 2 felt before going to sleep.</p>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 0.75rem;">
+              <label style="display: block; font-size: 0.825rem; font-weight: 700; margin-bottom: 0.4rem;">
+                How did writing or texting feel in your body and mind?
+              </label>
+              <div class="feel-pills-row" id="day2-feel-pills">
+                <button type="button" class="feel-pill-btn" data-feel="Much clearer now">Much clearer now</button>
+                <button type="button" class="feel-pill-btn" data-feel="A bit nervous but glad">A bit nervous but glad</button>
+                <button type="button" class="feel-pill-btn" data-feel="Calmer than yesterday">Calmer than yesterday</button>
+                <button type="button" class="feel-pill-btn" data-feel="Relieved to have it on paper">Relieved on paper</button>
+              </div>
+            </div>
+
+            <div>
+              <label for="day2-mistake-input" style="display: block; font-size: 0.825rem; font-weight: 700; margin-bottom: 0.35rem;">
+                What is one small mistake or awkward thought you gave yourself permission to accept?
+              </label>
+              <textarea
+                id="day2-mistake-input"
+                class="mistake-textarea"
+                rows="2"
+                placeholder="e.g., My pros and cons list was messy, or sending the text felt awkward, and I let it be..."
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="btn-group-nav">
+            <button type="button" class="pill-btn btn-outline btn-sm" id="day2-back-btn">
+              <span>← Day 1</span>
+            </button>
+            <button type="button" class="pill-btn btn-mint btn-sm" id="day2-next-btn">
+              <span>Ready for Day 3? →</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 5: DAY 3 FOCUSED SCREEN -->
+      <section class="wizard-screen" id="screen-day3">
+        <div class="cute-card">
+          <div class="step-header-with-avatar">
+            <!-- Sprout with a cute painter palette & brush -->
+            <svg width="60" height="60" viewBox="0 0 64 64" fill="none" class="mascot-svg" aria-hidden="true">
+              <circle cx="32" cy="34" r="24" fill="#c8e6c9" />
+              <circle cx="32" cy="34" r="21" fill="#a5d6a7" />
+              <path d="M25 30Q28 26 31 30" stroke="#1b4332" stroke-width="2.5" stroke-linecap="round" />
+              <path d="M35 30Q38 26 41 30" stroke="#1b4332" stroke-width="2.5" stroke-linecap="round" />
+              <!-- Big smile -->
+              <path d="M28 36Q32 41 36 36" stroke="#1b4332" stroke-width="2.2" stroke-linecap="round" fill="none" />
+              <circle cx="22" cy="34" r="2.5" fill="#ffab91" opacity="0.8" />
+              <circle cx="44" cy="34" r="2.5" fill="#ffab91" opacity="0.8" />
+              <!-- Painter brush in hand -->
+              <line x1="42" y1="36" x2="54" y2="22" stroke="#78350f" stroke-width="2.5" stroke-linecap="round" />
+              <polygon points="54,22 56,18 58,21" fill="#db2777" />
+              <!-- Sprout top leaf -->
+              <path d="M32 10C32 10 26 3 18 6C18 12 26 12 32 11" fill="#4caf50" stroke="#2e7d32" stroke-width="1.5" />
+              <path d="M32 10C32 10 38 3 46 6C46 12 38 12 32 11" fill="#81c784" stroke="#2e7d32" stroke-width="1.5" />
+              <path d="M32 10V15" stroke="#2e7d32" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+            <div>
+              <span class="day-tag day3-tag">Day 3: Messy Try</span>
+              <h2 class="wizard-title" style="margin-top: 0.25rem;">The power of messy action</h2>
+              <p class="wizard-subtitle" id="day3-choice-sub">Take a 15-minute test where perfection is banned</p>
+            </div>
+          </div>
+
+          <!-- Day 3 Action Bubble -->
+          <div class="day-focus-bubble" id="bubble-day3">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 id="day3-card-title" style="font-size: 1.15rem; color: var(--text-headline);">15-minute messy test</h3>
+              <span class="step-time">⏱️ 15 minutes</span>
+            </div>
+            <p class="step-instruction" id="day3-card-desc">
+              Take one tiny action for 15 minutes. Being messy is allowed. Perfection is completely banned.
+            </p>
+
+            <!-- DIRECT INLINE 15-MIN TIMER & MESSY DRAFT PAD (No toggle buttons needed) -->
+            <div class="inline-tool-container">
+              <div class="timer-row">
+                <div class="timer-left">
+                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#db2777" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  <div class="timer-number" id="time-display-3">15:00</div>
+                </div>
+                <div class="timer-actions">
+                  <button type="button" class="pill-btn btn-mint btn-sm" id="btn-start-3">Start Action Timer</button>
+                  <button type="button" class="pill-btn btn-outline btn-sm" id="btn-pause-3">Pause</button>
+                  <button type="button" class="pill-btn btn-outline btn-sm" id="btn-reset-3">Reset</button>
+                </div>
+              </div>
+
+              <div>
+                <label class="inline-notes-label" for="messy-notes-area">
+                  Messy First Try Pad: Write rough bullet points, rough sentences, or numbers.
+                </label>
+                <textarea
+                  class="inline-textarea"
+                  id="messy-notes-area"
+                  style="min-height: 105px;"
+                  placeholder="Type anything rough or unpolished. Do not fix any typos until the timer dings. Perfection is banned here."
+                ></textarea>
+              </div>
+            </div>
+
+            <div style="margin-top: 1rem;">
+              <label class="bubble-check-label">
+                <input type="checkbox" class="bubble-check-input" id="check-day-3" />
+                <span>I did my messy try</span>
+              </label>
+            </div>
+
+            <div class="step-grounding-tip" id="day3-card-tip">
+              <strong>Why this works:</strong> Letting yourself make a messy attempt breaks perfectionism and proves you can handle making small mistakes.
+            </div>
+          </div>
+
+          <!-- Day 3 Nighttime Check-in -->
+          <div class="night-checkin-card">
+            <div class="night-header">
+              <!-- Sleepy Sprout with moon -->
+              <svg width="44" height="44" viewBox="0 0 54 54" fill="none" aria-hidden="true" style="flex-shrink: 0;">
+                <circle cx="27" cy="27" r="25" fill="#ede7f6" />
+                <path d="M30 14C22 14 16 20 16 28C16 36 22 42 30 42C32 42 34 41 36 40C28 38 23 32 23 26C23 19 28 15 36 16C34 15 32 14 30 14Z" fill="#7e57c2" />
+                <path d="M22 27Q24 25 26 27" stroke="#ffffff" stroke-width="2" stroke-linecap="round" fill="none" />
+                <circle cx="21" cy="29" r="1.5" fill="#ffab91" />
+                <polygon points="38,22 39,25 42,25 39.5,27 40.5,30 38,28 35.5,30 36.5,27 34,25 37,25" fill="#ffd54f" />
+              </svg>
+              <div>
+                <h4>🌙 Day 3 Nighttime Check-in</h4>
+                <p>Final evening check-in after completing all three test days.</p>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 0.75rem;">
+              <label style="display: block; font-size: 0.825rem; font-weight: 700; margin-bottom: 0.4rem;">
+                How do you feel after doing a messy 15-minute try?
+              </label>
+              <div class="feel-pills-row" id="day3-feel-pills">
+                <button type="button" class="feel-pill-btn" data-feel="Proud of myself">Proud of myself</button>
+                <button type="button" class="feel-pill-btn" data-feel="Surprised it was not that bad">Surprised it was not bad</button>
+                <button type="button" class="feel-pill-btn" data-feel="Stronger and braver">Stronger and braver</button>
+                <button type="button" class="feel-pill-btn" data-feel="Ready to decide">Ready to decide</button>
+              </div>
+            </div>
+
+            <div>
+              <label for="day3-mistake-input" style="display: block; font-size: 0.825rem; font-weight: 700; margin-bottom: 0.35rem;">
+                What was something imperfect you did today that you now feel okay about?
+              </label>
+              <textarea
+                id="day3-mistake-input"
+                class="mistake-textarea"
+                rows="2"
+                placeholder="e.g., My draft was full of rough ideas, but I was brave enough to start..."
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="btn-group-nav">
+            <button type="button" class="pill-btn btn-outline btn-sm" id="day3-back-btn">
+              <span>← Day 2</span>
+            </button>
+            <button type="button" class="pill-btn btn-mint btn-sm" id="day3-next-btn">
+              <span>See Your Review & Final Decision →</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 6: REVIEW & FINAL DECISION SCREEN -->
+      <section class="wizard-screen" id="screen-final">
+        <div class="cute-card">
+          <!-- Mascot Celebration -->
+          <div style="text-align: center; margin-bottom: 1.5rem;">
+            <svg width="85" height="85" viewBox="0 0 100 100" fill="none" class="mascot-svg" aria-hidden="true">
+              <circle cx="50" cy="54" r="38" stroke="#ffe066" stroke-width="2" stroke-dasharray="4 4" />
+              <circle cx="50" cy="54" r="32" fill="#a5d6a7" />
+              <path d="M38 48Q42 42 46 48" stroke="#1b4332" stroke-width="3" stroke-linecap="round" fill="none" />
+              <path d="M54 48Q58 42 62 48" stroke="#1b4332" stroke-width="3" stroke-linecap="round" fill="none" />
+              <ellipse cx="50" cy="58" rx="6" ry="4" fill="#1b4332" />
+              <circle cx="34" cy="54" r="5" fill="#ffab91" opacity="0.8" />
+              <circle cx="66" cy="54" r="5" fill="#ffab91" opacity="0.8" />
+              <path d="M22 54Q14 44 14 36" stroke="#2e7d32" stroke-width="3.5" stroke-linecap="round" />
+              <path d="M78 54Q86 44 86 36" stroke="#2e7d32" stroke-width="3.5" stroke-linecap="round" />
+              <path d="M50 24C50 24 40 12 28 17C28 27 40 27 50 25" fill="#4caf50" stroke="#2e7d32" stroke-width="2" />
+              <path d="M50 24C50 24 60 12 72 17C72 27 60 27 50 25" fill="#81c784" stroke="#2e7d32" stroke-width="2" />
+              <path d="M50 24V32" stroke="#2e7d32" stroke-width="3" stroke-linecap="round" />
+            </svg>
+            <div class="badge-tag" style="margin-top: 0.75rem;">
+              <span>🎉 You Finished the 3 Days</span>
+            </div>
+            <h2 class="wizard-title" style="font-size: 1.7rem;">Look how far you came!</h2>
+            <p class="wizard-subtitle">
+              Three days ago, this choice felt completely stuck. You took three real, imperfect actions anyway.
+            </p>
+          </div>
+
+          <!-- Completion Tracker Card -->
+          <div class="completion-card" id="completion-summary-card">
+            <div class="completion-card-header">
+              <div class="completion-header-left">
+                <span class="completion-trophy">🏆</span>
+                <div>
+                  <h3 class="completion-title">Your 3-Day Completion Tracker</h3>
+                  <p class="completion-sub">Look at how each micro-step moved you past overthinking.</p>
+                </div>
+              </div>
+              <div class="completion-score-badge" id="completion-final-badge">
+                <span id="final-tracker-count">0 of 7</span> Done
+              </div>
+            </div>
+
+            <div class="tracker-bar-track" style="margin: 0.9rem 0 1rem;">
+              <div class="tracker-bar-fill" id="final-tracker-fill" style="width: 0%;"></div>
+            </div>
+
+            <div class="completion-checklist" id="completion-checklist">
+              <div class="check-item" id="citem-1">
+                <div class="citem-left">
+                  <span class="citem-status-icon" id="cicon-1">○</span>
+                  <span class="citem-label">Day 1 Action: 10-minute low-effort research look</span>
+                </div>
+                <span class="citem-pill" id="cpill-1">Waiting</span>
+              </div>
+              <div class="check-item" id="citem-2">
+                <div class="citem-left">
+                  <span class="citem-status-icon" id="cicon-2">○</span>
+                  <span class="citem-label">Day 1 Night: Feelings and small mistake accepted</span>
+                </div>
+                <span class="citem-pill" id="cpill-2">Waiting</span>
+              </div>
+              <div class="check-item" id="citem-3">
+                <div class="citem-left">
+                  <span class="citem-status-icon" id="cicon-3">○</span>
+                  <span class="citem-label">Day 2 Action: 3 Pros and Cons list or friend outreach</span>
+                </div>
+                <span class="citem-pill" id="cpill-3">Waiting</span>
+              </div>
+              <div class="check-item" id="citem-4">
+                <div class="citem-left">
+                  <span class="citem-status-icon" id="cicon-4">○</span>
+                  <span class="citem-label">Day 2 Night: Feelings and small mistake accepted</span>
+                </div>
+                <span class="citem-pill" id="cpill-4">Waiting</span>
+              </div>
+              <div class="check-item" id="citem-5">
+                <div class="citem-left">
+                  <span class="citem-status-icon" id="cicon-5">○</span>
+                  <span class="citem-label">Day 3 Action: 15-minute messy first try</span>
+                </div>
+                <span class="citem-pill" id="cpill-5">Waiting</span>
+              </div>
+              <div class="check-item" id="citem-6">
+                <div class="citem-left">
+                  <span class="citem-status-icon" id="cicon-6">○</span>
+                  <span class="citem-label">Day 3 Night: Feelings and small mistake accepted</span>
+                </div>
+                <span class="citem-pill" id="cpill-6">Waiting</span>
+              </div>
+              <div class="check-item" id="citem-7">
+                <div class="citem-left">
+                  <span class="citem-status-icon" id="cicon-7">○</span>
+                  <span class="citem-label">Final Decision: You made your conscious call</span>
+                </div>
+                <span class="citem-pill" id="cpill-7">Pick below</span>
+              </div>
+            </div>
+
+            <div class="completion-banner-100" id="completion-banner-100" style="display: none;">
+              <span style="font-size: 1.6rem;">🎉</span>
+              <div>
+                <strong>100 Percent Unstuck!</strong>
+                <p>You completed every micro-step. You proved that taking small action beats being stuck in perfectionism.</p>
+              </div>
+            </div>
+
+            <div style="text-align: right; margin-top: 0.5rem;">
+              <button type="button" class="replay-confetti-btn" id="replay-confetti-btn" style="display: none;">
+                <span>Celebrate Again 🎊</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Review Summary Grid -->
+          <div class="final-review-grid">
+            <div class="summary-card">
+              <h5>🎯 The Choice You Tested</h5>
+              <p id="review-choice-text" style="font-weight: 700; color: #1e293b;"></p>
+              <p id="review-value-text" style="color: #2e7d32; font-size: 0.8rem; margin-top: 0.25rem;"></p>
+            </div>
+
+            <div class="summary-card">
+              <h5>📝 What You Jot Down (Day 2)</h5>
+              <div id="review-notes-text" style="font-size: 0.825rem; color: var(--text-body);"></div>
+            </div>
+
+            <div class="summary-card">
+              <h5>🌙 How You Felt on the Journey</h5>
+              <div id="review-feelings-list" style="font-size: 0.825rem;"></div>
+            </div>
+
+            <div class="summary-card">
+              <h5>🌱 Mistakes You Made Peace With</h5>
+              <div id="review-mistakes-list" style="font-size: 0.825rem; font-style: italic;"></div>
+            </div>
+          </div>
+
+          <!-- Final Decision Question -->
+          <div style="margin-top: 1.75rem;">
+            <h3 style="font-size: 1.2rem; color: var(--text-headline); margin-bottom: 0.35rem;">
+              Are you ready to make your call?
+            </h3>
+            <p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+              Tap how your heart feels right now. There are no wrong answers here.
+            </p>
+
+            <div class="decision-options">
+              <button type="button" class="decision-btn" data-decision="yes">
+                <span class="decision-emoji">🚀</span>
+                <div>
+                  <h4>Yes, I want to go for it</h4>
+                  <p>I tested the waters, and I feel ready to move forward.</p>
+                </div>
+              </button>
+
+              <button type="button" class="decision-btn" data-decision="no">
+                <span class="decision-emoji">🛑</span>
+                <div>
+                  <h4>I decided not to do it, and that feels good</h4>
+                  <p>Saying no is just as powerful. I am protecting my peace and my wallet.</p>
+                </div>
+              </button>
+
+              <button type="button" class="decision-btn" data-decision="wait">
+                <span class="decision-emoji">⏳</span>
+                <div>
+                  <h4>I need a little more time, and that is okay</h4>
+                  <p>I do not have to rush. I learned a lot from this test run and will pause.</p>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Empowering Confidence Advice Box -->
+          <div class="empower-box" id="empower-box">
+            <div class="empower-header">
+              <span style="font-size: 1.4rem;">💡</span>
+              <h3 id="empower-title">Confidence boost for your choice</h3>
+            </div>
+            <p class="empower-text" id="empower-text">
+              Whatever you decide, remember this: the hardest part of any choice is not picking right, it is believing in yourself to handle whatever comes next. You just proved you can take steps through uncertainty. That is real courage.
+            </p>
+          </div>
+
+          <!-- PDF Export Callout Card -->
+          <div class="pdf-export-card" id="pdf-export-callout">
+            <div class="pdf-card-left">
+              <span class="pdf-card-icon">📑</span>
+              <div>
+                <h4>Save Your 3-Day Journey</h4>
+                <p>Download your complete notes, reflections, and final decision as a keepsake PDF.</p>
+              </div>
+            </div>
+            <button type="button" class="pill-btn btn-mint btn-sm" id="download-pdf-card-btn">
+              <span>Download PDF 📥</span>
+            </button>
+          </div>
+
+          <div class="btn-group-nav">
+            <button type="button" class="pill-btn btn-outline btn-sm" id="final-back-btn">
+              <span>← Day 3</span>
+            </button>
+            <button type="button" class="pill-btn btn-mint btn-sm" id="download-pdf-btn">
+              <span>📄 Download PDF</span>
+            </button>
+            <button type="button" class="pill-btn btn-outline btn-sm" id="final-new-btn">
+              <span>Test Another Choice ✨</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feedback Toast -->
+      <div id="toast" class="toast-bubble" role="status" aria-live="polite"></div>
+
+      <!-- Footer -->
       <footer>
-        Made with care for young adults navigating big choices ✨
+        <p>Unstuck: The Micro-Step Planner. Made to help you test things out and be kind to yourself.</p>
       </footer>
     </div>
 
+    <!-- Standalone Client-side Script (Runs everywhere with zero bundler or build steps needed) -->
     <script>
-      let userChoice = "";
-      let selectedValue = "Peace of Mind";
+      // State
+      const appState = {
+        currentView: 'landing',
+        choice: '',
+        category: 'purchase',
+        value: 'Peace of Mind',
+        activePlan: null,
+        completedSteps: { day1: false, day2: false, day3: false },
+        day1ResearchNotes: '',
+        dayCheckins: {
+          day1: { feel: '', mistake: '' },
+          day2: { feel: '', mistake: '' },
+          day3: { feel: '', mistake: '' }
+        },
+        prosCons: { pro1: '', pro2: '', pro3: '', con1: '', con2: '', con3: '' },
+        messyNotes: '',
+        finalDecision: ''
+      };
 
-      function goToStep(stepNumber) {
-        document.querySelectorAll('.step-card').forEach(card => {
-          card.classList.remove('active');
-        });
-        document.getElementById(`card-step-${stepNumber}`).classList.add('active');
-      }
+      // Sound synthesizer
+      function playChime() {
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          const ctx = new AudioContext();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
 
-      function setPreset(text) {
-        document.getElementById('choice-input').value = text;
-      }
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.3);
 
-      function validateStep1() {
-        const input = document.getElementById('choice-input').value.trim();
-        if (!input) {
-          alert('Please enter or select a choice to continue, bestie!');
-          return;
+          gain.gain.setValueAtTime(0.12, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start();
+          osc.stop(ctx.currentTime + 1.2);
+        } catch (e) {
+          // Graceful fallback
         }
-        userChoice = input;
-        goToStep(2);
       }
 
-      function selectValue(element, valueText) {
-        document.querySelectorAll('.value-card-option').forEach(card => {
-          card.classList.remove('selected');
+      function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }
+
+      // Automatic Category Classifier based on easy keywords
+      function detectCategory(text) {
+        const lower = text.toLowerCase();
+        if (/buy|purchase|phone|iphone|android|laptop|macbook|car|spend|cost|expensive|price|order|upgrade|gear|gadget|console|shopping|invest in a|afford/.test(lower)) {
+          return 'purchase';
+        }
+        if (/major|degree|college|university|class|course|school|study|exam|grade|career|job|internship|resume|hire|interview|quit|salary|promotion/.test(lower)) {
+          return 'career';
+        }
+        if (/project|write|paper|thesis|essay|book|art|code|app|video|podcast|design|launch|portfolio|music|draw|novel|create/.test(lower)) {
+          return 'project';
+        }
+        if (/talk|conversation|friend|roommate|partner|date|breakup|message|relationship|parent|family|boundary|say no/.test(lower)) {
+          return 'social';
+        }
+        if (/move|moving|apartment|city|relocate|lease|routine|habit|gym|workout|sleep|diet|quit smoking|gap year/.test(lower)) {
+          return 'lifestyle';
+        }
+        return 'general';
+      }
+
+      const categoryLabels = {
+        purchase: 'Buying Something or Spending Money',
+        career: 'School, College, or Career',
+        project: 'Creative Project or Writing',
+        social: 'Friend, Roommate, or Family Talk',
+        lifestyle: 'Daily Routine or Moving',
+        general: 'General Crossroad or Life Choice'
+      };
+
+      // Easy English Plan Matrix (Category × Core Value)
+      // Zero em-dashes, zero semicolons, clear and friendly for young teens/adults
+      const planMatrix = {
+        purchase: {
+          'Financial Security': [
+            {
+              day1Title: '10-minute real price check',
+              day1Desc: 'Spend 10 minutes finding the real final cost with tax and a basic case. Write that single number down below, then close all shopping tabs for the day.',
+              day1Tip: 'Seeing the real number stops guesswork and helps your brain feel safe with honest facts.',
+              day2Title: 'Write 3 real needs and 3 trade-offs',
+              day2Desc: 'List 3 daily problems this item genuinely solves that your current setup cannot do, and 3 other fun things that money could buy instead. Or text 1 friend who owns it to see if the excitement lasted.',
+              day2Tip: 'Writing your thoughts down helps you see if this is an actual daily need or just a quick impulse.',
+              day3Title: '15-minute savings check and cooling pause',
+              day3Desc: 'Spend 15 minutes checking if you have enough saved to pay in cash without touching emergency money. Then put it in your online cart and wait 48 hours before checking out.',
+              day3Tip: 'Waiting 48 hours proves that waiting is safe and protects you from buying things you later regret.'
+            }
+          ],
+          'Peace of Mind': [
+            {
+              day1Title: '10-minute return policy check',
+              day1Desc: 'Spend 10 minutes checking the return window and repair options so you know you are not trapped if you change your mind.',
+              day1Tip: 'Knowing you can return something takes away the fear of making a permanent mistake.',
+              day2Title: 'Write 3 quiet worries and 1 friendly text',
+              day2Desc: 'Write down 3 worries you have about spending this money and 3 ways you will forgive yourself if you feel buyer remorse. Or ask 1 trusted friend for their honest thoughts.',
+              day2Tip: 'Putting quiet worries into words makes them feel much smaller and easier to handle.',
+              day3Title: '15-minute cart cooling pause',
+              day3Desc: 'Add the item to your cart without typing your card info. Close the browser for 15 minutes and notice how your body relaxes once the rush is gone.',
+              day3Tip: 'Pausing gives your nervous system time to settle down so you can make a calm choice.'
+            }
+          ],
+          'Personal Growth': [
+            {
+              day1Title: '10-minute skill check',
+              day1Desc: 'Spend 10 minutes checking if this item will truly help you learn new skills or if it is just a fun shiny gadget.',
+              day1Tip: 'Knowing the difference between a real tool and a temporary toy keeps your goals clear.',
+              day2Title: 'Ask 1 owner about their everyday use',
+              day2Desc: 'Text someone who has this tool: "Did this actually help you get things done, or did your habits stay about the same?"',
+              day2Tip: 'Hearing from someone who already owns it gives you a realistic idea of what to expect.',
+              day3Title: '15-minute test on what you already own',
+              day3Desc: 'Spend 15 minutes doing the project you want to do using whatever gear you already have right now.',
+              day3Tip: 'Trying the project on your current setup proves if you really care about the hobby or just the gear.'
+            }
+          ],
+          'Creative Freedom': [
+            {
+              day1Title: '10-minute creative look',
+              day1Desc: 'Spend 10 minutes researching if this tool unlocks fresh ideas or if simpler tools can already do most of it.',
+              day1Tip: 'Creativity comes from your imagination more than fancy gear.',
+              day2Title: 'Write 3 projects you will make',
+              day2Desc: 'List 3 specific things you will make with this tool, and 3 ways playing with new settings might distract you.',
+              day2Tip: 'Knowing the distraction risk helps you stay focused on making cool things.',
+              day3Title: '15-minute raw rough try',
+              day3Desc: 'Spend 15 minutes making a rough first outline or sketch using whatever you already own.',
+              day3Tip: 'Starting with whatever you have builds creative momentum right away.'
+            }
+          ]
+        },
+
+        career: {
+          'Financial Security': [
+            {
+              day1Title: '10-minute real salary check',
+              day1Desc: 'Look up 2 entry-level jobs in this field to see what they pay on average. Look at basic numbers without putting pressure on yourself.',
+              day1Tip: 'Seeing real salary numbers takes away the fog of financial worry.',
+              day2Title: 'Write 3 steady perks and 3 questions',
+              day2Desc: 'List 3 reliable benefits of this path and 3 money questions you want answered before taking a leap.',
+              day2Tip: 'Writing down what you do not know yet shows you what to ask next.',
+              day3Title: '15-minute safety checklist',
+              day3Desc: 'Write a quick 5-point list of what you would need in place to test this transition safely.',
+              day3Tip: 'Having a basic safety plan lets you explore bold choices with calm nerves.'
+            }
+          ],
+          'Peace of Mind': [
+            {
+              day1Title: '10-minute look at 1 option',
+              day1Desc: 'Look at just one course list or job description for 10 minutes without judging yourself. When the timer rings, close the tab and let it rest.',
+              day1Tip: 'Keeping research to 10 minutes stops you from getting tired and overwhelmed.',
+              day2Title: 'Write 3 relief points and 3 release points',
+              day2Desc: 'Write down 3 things you would be glad to let go of if you chose this, and 3 moments of relief it would bring you.',
+              day2Tip: 'Knowing what brings you relief points you toward peace.',
+              day3Title: '15-minute gentle trial',
+              day3Desc: 'Spend 15 minutes reading 1 lesson or watching 1 video in a quiet room. Stop right at 15 minutes.',
+              day3Tip: 'A quick taste proves you can move forward without getting stuck.'
+            }
+          ],
+          'Personal Growth': [
+            {
+              day1Title: '10-minute beginner look',
+              day1Desc: 'Search what people learn in their first month on this path. Look for skills, challenges, and surprises without locking yourself in.',
+              day1Tip: 'Curiosity turns nervous thoughts into an exciting adventure.',
+              day2Title: 'Write 3 skills to build and 3 bumpy moments',
+              day2Desc: 'Write down 3 abilities you will build, and 3 mistakes you will welcome as a normal part of learning.',
+              day2Tip: 'Expecting small mistakes takes away the fear of looking silly.',
+              day3Title: '15-minute clumsy test',
+              day3Desc: 'Try the hardest part of the topic for just 15 minutes. Expect it to feel clumsy and celebrate that you tried.',
+              day3Tip: 'Taking small actions builds your confidence faster than sitting and worrying.'
+            }
+          ],
+          'Creative Freedom': [
+            {
+              day1Title: '10-minute story search',
+              day1Desc: 'Find 2 people who did this path in an unusual, creative way. Notice how their journey was not a straight line.',
+              day1Tip: 'Seeing different paths frees you from thinking there is only one right way to live.',
+              day2Title: 'Write 3 bold ideas and 3 safety needs',
+              day2Desc: 'List 3 ways this path gives you freedom, and 3 safety rails you need to feel calm.',
+              day2Tip: 'Balancing freedom with basic safety prevents you from burning out.',
+              day3Title: '15-minute ideal day note',
+              day3Desc: 'Spend 15 minutes writing a short paragraph about what a fun, peaceful Tuesday would feel like on this path.',
+              day3Tip: 'Imagining an ordinary day gives you a clear gut feeling about what fits you.'
+            }
+          ]
+        },
+
+        project: {
+          'Peace of Mind': [
+            {
+              day1Title: '10-minute outline scan',
+              day1Desc: 'Spend 10 minutes writing basic topic headers or questions. Stop when the timer dings. Do not write full sentences.',
+              day1Tip: 'Writing quick headers keeps the task small and manageable.',
+              day2Title: 'Write 3 must-haves and 3 things to drop',
+              day2Desc: 'Write 3 things this project really needs, and 3 complicated ideas you give yourself permission to drop.',
+              day2Tip: 'Cutting unnecessary work is the kindest thing you can do for your peace of mind.',
+              day3Title: '15-minute messy rough start',
+              day3Desc: 'Write rough fragments or bullet points for 15 minutes. Leave all typos alone until the timer rings.',
+              day3Tip: 'Letting typos stay proves to your brain that imperfection is harmless.'
+            }
+          ],
+          'Personal Growth': [
+            {
+              day1Title: '10-minute beginner tutorial',
+              day1Desc: 'Watch 1 beginner tutorial on the trickiest part of this project. Keep your hands off the keyboard.',
+              day1Tip: 'Watching first lets your brain soak in the ideas without performance pressure.',
+              day2Title: 'Write 3 tricks and message 1 friend',
+              day2Desc: 'Write 3 new skills you want to learn here, and tell 1 friend about the general idea.',
+              day2Tip: 'Talking to a friend keeps you feeling supported rather than lonely.',
+              day3Title: '15-minute messy draft run',
+              day3Desc: 'Spend 15 minutes making the messiest working version possible. The goal is finishing a draft, not making it pretty.',
+              day3Tip: 'A finished messy version gives you something real you can fix up later.'
+            }
+          ],
+          'Financial Security': [
+            {
+              day1Title: '10-minute free tools check',
+              day1Desc: 'List the free tools or library items you can use for this project. Keep expenses at zero dollars.',
+              day1Tip: 'Free test runs protect your wallet while you learn.',
+              day2Title: 'Write 3 helpful outcomes and 3 time traps',
+              day2Desc: 'Identify 3 good things this project builds for you, and 3 time-wasting traps to avoid.',
+              day2Tip: 'Protecting your time protects your energy and your schoolwork.',
+              day3Title: '15-minute skeleton build',
+              day3Desc: 'Build just the bare bones structure for 15 minutes. Save the file and close it when the bell dings.',
+              day3Tip: 'Small steps keep you moving forward without stress.'
+            }
+          ],
+          'Creative Freedom': [
+            {
+              day1Title: '10-minute wild brainstorm',
+              day1Desc: 'Write the strangest, most fun ideas for this project without editing for 10 minutes. Nothing is too silly.',
+              day1Tip: 'Pausing your inner critic helps you find fun, original ideas.',
+              day2Title: 'Write 3 playful ideas and 3 honest fears',
+              day2Desc: 'List 3 playful things you want to try, and 3 fears about what people might think.',
+              day2Tip: 'Naming your fears takes away their power over you.',
+              day3Title: '15-minute silly prototype',
+              day3Desc: 'Spend 15 minutes making a rough, fun version. Have fun being messy without worrying about reviews.',
+              day3Tip: 'Raw expression helps you reconnect with what you truly love making.'
+            }
+          ]
+        },
+
+        social: {
+          'Peace of Mind': [
+            {
+              day1Title: '10-minute honest feeling dump',
+              day1Desc: 'Write down your raw, honest feelings about this talk for 10 minutes in the notes box, then close it.',
+              day1Tip: 'Writing out your feelings lets steam out before you talk to anyone else.',
+              day2Title: 'Write 3 calm points and draft 1 gentle text',
+              day2Desc: 'Write 3 things you need to feel calm, and write a simple 2-sentence note to ask for a chat.',
+              day2Tip: 'Knowing what you need keeps you calm during the conversation.',
+              day3Title: '15-minute calm delivery test',
+              day3Desc: 'Practice saying your 2 sentences out loud or send the short message to set up a friendly chat.',
+              day3Tip: 'Sending the note stops days of painful worrying.'
+            }
+          ],
+          'Personal Growth': [
+            {
+              day1Title: '10-minute empathy pause',
+              day1Desc: 'Spend 10 minutes imagining how the other person might see things without blaming yourself.',
+              day1Tip: 'Seeing things from both sides makes tough chats much smoother.',
+              day2Title: 'Write 3 honest truths and 1 kind greeting',
+              day2Desc: 'Write 3 things that are true for you and prepare one gentle opener: "I care about this and want to chat when you have time."',
+              day2Tip: 'Speaking truth kindly is a great sign of growing up.',
+              day3Title: '15-minute action step',
+              day3Desc: 'Send the message or make the call inside a 15-minute window. Take a deep breath.',
+              day3Tip: 'Practicing courage makes you trust yourself more each time.'
+            }
+          ],
+          'Financial Security': [
+            {
+              day1Title: '10-minute shared cost review',
+              day1Desc: 'Review the shared bills or split costs on paper for 10 minutes with clear numbers.',
+              day1Tip: 'Clear numbers keep friendships and roommate bonds healthy.',
+              day2Title: 'Write 3 fair splits and 3 worries',
+              day2Desc: 'List 3 fair ways to split the costs and 3 money worries you want to solve together.',
+              day2Tip: 'Being open about money stops hidden resentment.',
+              day3Title: '15-minute quick chat',
+              day3Desc: 'Have a short 15-minute talk or send a calm message showing the numbers clearly.',
+              day3Tip: 'Short chats keep money topics from feeling awkward.'
+            }
+          ],
+          'Creative Freedom': [
+            {
+              day1Title: '10-minute personal energy check',
+              day1Desc: 'Notice how this connection affects your creative energy and free time.',
+              day1Tip: 'Protecting your creative peace is important for your happiness.',
+              day2Title: 'Write 3 ways to express yourself kindly',
+              day2Desc: 'Write 3 ways to honor your own needs while still being warm and friendly.',
+              day2Tip: 'Being yourself does not mean you have to start a fight.',
+              day3Title: '15-minute honest chat',
+              day3Desc: 'Take a 15-minute gentle step to share how you feel in an open, friendly way.',
+              day3Tip: 'Sharing your true self helps you build real friendships.'
+            }
+          ]
+        },
+
+        lifestyle: {
+          'Peace of Mind': [
+            {
+              day1Title: '10-minute calm audit',
+              day1Desc: 'Spend 10 minutes writing down when during the day you feel most rushed or stressed by this routine.',
+              day1Tip: 'Noticing when you feel stressed is the first step to making it better.',
+              day2Title: 'Write 3 daily comforts and 3 annoyances to drop',
+              day2Desc: 'List 3 calming things you want to keep, and 3 annoying habits you are ready to drop.',
+              day2Tip: 'Dropping annoyances gives you more peace than adding new tasks.',
+              day3Title: '15-minute mini trial',
+              day3Desc: 'Try out the new habit or look at 1 new room option for just 15 minutes as a fun test.',
+              day3Tip: 'A 15-minute trial proves that small changes are easy to make.'
+            }
+          ],
+          'Personal Growth': [
+            {
+              day1Title: '10-minute habit check',
+              day1Desc: 'Spend 10 minutes reading how tiny cues in your room make good habits automatic.',
+              day1Tip: 'Changing your room setup works better than relying on raw willpower.',
+              day2Title: 'Write 3 good habits and tell 1 friend',
+              day2Desc: 'Write 3 ways this new habit helps you, and tell 1 friend what you are testing.',
+              day2Tip: 'Telling a friend makes your new habit feel real.',
+              day3Title: '15-minute first run',
+              day3Desc: 'Do the new habit for 15 minutes with zero pressure to be fast or perfect.',
+              day3Tip: 'Repeating simple steps builds your confidence day by day.'
+            }
+          ],
+          'Financial Security': [
+            {
+              day1Title: '10-minute cost difference check',
+              day1Desc: 'Calculate the monthly difference this habit or move makes to your wallet for 10 minutes.',
+              day1Tip: 'Seeing monthly savings gives you clear motivation to stick with it.',
+              day2Title: 'Write 3 savings perks and 3 hidden costs',
+              day2Desc: 'List 3 money benefits and 3 surprise costs to watch out for ahead of time.',
+              day2Tip: 'Planning for surprises keeps your bank balance safe.',
+              day3Title: '15-minute setup check',
+              day3Desc: 'Spend 15 minutes cleaning up your space or sheet for this change. Stop when the timer dings.',
+              day3Tip: 'Organizing your room makes the next step feel effortless.'
+            }
+          ],
+          'Creative Freedom': [
+            {
+              day1Title: '10-minute flexible schedule design',
+              day1Desc: 'Design a loose, flexible version of this routine that leaves lots of free time for fun.',
+              day1Tip: 'Routines should give you freedom, not trap you in a cage.',
+              day2Title: 'Write 3 fun perks and 3 strict rules to drop',
+              day2Desc: 'List 3 fun perks of this routine and drop 3 strict rules that drain your joy.',
+              day2Tip: 'Dropping strict rules keeps perfectionism from ruining your mood.',
+              day3Title: '15-minute fun test',
+              day3Desc: 'Try out the new routine for 15 minutes with a light, playful attitude.',
+              day3Tip: 'Staying playful makes self-improvement feel like a fun game.'
+            }
+          ]
+        },
+
+        general: {
+          'Peace of Mind': [
+            {
+              day1Title: '10-minute simple fact check',
+              day1Desc: 'Look at just one reliable source of information for 10 minutes without making any promises. Close tabs when the bell rings.',
+              day1Tip: 'Gathering facts in a short burst stops endless internet searching.',
+              day2Title: 'Write 3 pros and 3 cons on scratchpad',
+              day2Desc: 'Write down 3 things that look good and 3 worries. Or ask 1 trusted friend what they think.',
+              day2Tip: 'Putting thoughts on paper takes the racing thoughts out of your head.',
+              day3Title: '15-minute low-risk action step',
+              day3Desc: 'Take one tiny, reversible 15-minute step in this direction. Notice that the world does not end if it feels a little awkward.',
+              day3Tip: 'Reversible steps show your body that exploring is completely safe.'
+            }
+          ],
+          'Financial Security': [
+            {
+              day1Title: '10-minute wallet review',
+              day1Desc: 'Check the direct money impact of this choice for 10 minutes with honest estimates.',
+              day1Tip: 'Real numbers are almost always less scary than imagined worst cases.',
+              day2Title: 'Write 3 safety perks and 3 trade-offs',
+              day2Desc: 'List 3 ways this choice protects your savings and 3 alternative uses for that money.',
+              day2Tip: 'Comparing trade-offs gives you clear, calm answers.',
+              day3Title: '15-minute emergency buffer check',
+              day3Desc: 'Spend 15 minutes checking your savings to make sure this experiment keeps you secure.',
+              day3Tip: 'Knowing your baseline is safe lets you make calm choices.'
+            }
+          ],
+          'Personal Growth': [
+            {
+              day1Title: '10-minute curiosity scan',
+              day1Desc: 'Look up what lessons other people learned when they stood at this exact same fork in the road.',
+              day1Tip: 'Hearing other stories shows you that being unsure is completely normal.',
+              day2Title: 'Write 3 growth perks and message 1 friend',
+              day2Desc: 'Write 3 ways this challenge will build your character, and send a quick note to someone you trust.',
+              day2Tip: 'Seeing challenges as learning moments builds lasting strength.',
+              day3Title: '15-minute clumsy try',
+              day3Desc: 'Take one 15-minute step forward. Allow it to be messy and applaud yourself for moving.',
+              day3Tip: 'Perfection is impossible, but taking small steps is real.'
+            }
+          ],
+          'Creative Freedom': [
+            {
+              day1Title: '10-minute creative look',
+              day1Desc: 'Look at this choice from a fun, unusual angle for 10 minutes without peer pressure.',
+              day1Tip: 'Thinking outside the box starts with giving yourself permission to be different.',
+              day2Title: 'Write 3 bold ideas and 3 honest doubts',
+              day2Desc: 'List 3 fun possibilities and 3 worries that are making you hesitate.',
+              day2Tip: 'Listening to your doubts keeps your bold goals grounded.',
+              day3Title: '15-minute experimental step',
+              day3Desc: 'Take one 15-minute playful step without needing anyone else approval.',
+              day3Tip: 'Following your own taste builds real self-trust.'
+            }
+          ]
+        }
+      };
+
+      function getOutreachMessage(category, choice) {
+        if (category === 'purchase') {
+          return `"Hey! I know you bought this or something similar recently. Now that the hype settled down, do you feel it was really worth the money?"`;
+        }
+        if (category === 'career') {
+          return `"Hey! I am thinking about ${choice} and remembered you did something like this. If you have five minutes next week, could I ask one quick question?"`;
+        }
+        if (category === 'project') {
+          return `"Hey! I am working on a rough idea for ${choice}. Could I tell you two quick sentences to see if it makes sense?"`;
+        }
+        if (category === 'social') {
+          return `"Hey! I really care about our friendship and would love to have a friendly chat when you have some free time this week."`;
+        }
+        if (category === 'lifestyle') {
+          return `"Hey! I am testing out a small change in my daily routine. How did you handle things when you tried something similar?"`;
+        }
+        return `"Hey! I am thinking over a small choice and would love your honest opinion for two minutes if you have time."`;
+      }
+
+      // Completion Tracker Calculation & Sync
+      function getCompletionDetails() {
+        const s1 = Boolean(appState.completedSteps.day1 || (appState.day1ResearchNotes && appState.day1ResearchNotes.trim().length > 0));
+        const s2 = Boolean(appState.dayCheckins.day1.feel || (appState.dayCheckins.day1.mistake && appState.dayCheckins.day1.mistake.trim().length > 0));
+        const s3 = Boolean(appState.completedSteps.day2 || (appState.prosCons.pro1 || appState.prosCons.pro2 || appState.prosCons.con1 || appState.prosCons.con2));
+        const s4 = Boolean(appState.dayCheckins.day2.feel || (appState.dayCheckins.day2.mistake && appState.dayCheckins.day2.mistake.trim().length > 0));
+        const s5 = Boolean(appState.completedSteps.day3 || (appState.messyNotes && appState.messyNotes.trim().length > 0));
+        const s6 = Boolean(appState.dayCheckins.day3.feel || (appState.dayCheckins.day3.mistake && appState.dayCheckins.day3.mistake.trim().length > 0));
+        const s7 = Boolean(appState.finalDecision);
+
+        const list = [
+          { id: 'day1-step', num: 1, label: 'Day 1 Action: 10-minute low-effort research look', short: 'Day 1 Action', done: s1, target: 'day1' },
+          { id: 'day1-check', num: 2, label: 'Day 1 Night: Feelings and small mistake accepted', short: 'Day 1 Night', done: s2, target: 'day1' },
+          { id: 'day2-step', num: 3, label: 'Day 2 Action: 3 Pros and Cons list or friend outreach', short: 'Day 2 Action', done: s3, target: 'day2' },
+          { id: 'day2-check', num: 4, label: 'Day 2 Night: Feelings and small mistake accepted', short: 'Day 2 Night', done: s4, target: 'day2' },
+          { id: 'day3-step', num: 5, label: 'Day 3 Action: 15-minute messy first try', short: 'Day 3 Action', done: s5, target: 'day3' },
+          { id: 'day3-check', num: 6, label: 'Day 3 Night: Feelings and small mistake accepted', short: 'Day 3 Night', done: s6, target: 'day3' },
+          { id: 'final-dec', num: 7, label: 'Final Decision: You made your conscious call', short: 'Final Call', done: s7, target: 'final' }
+        ];
+
+        const doneCount = list.filter(item => item.done).length;
+        const total = list.length;
+        const percent = Math.round((doneCount / total) * 100);
+
+        return { list, doneCount, total, percent };
+      }
+
+      function updateCompletionTracker() {
+        const { list, doneCount, total, percent } = getCompletionDetails();
+
+        // 1. Top tracker bar
+        const countText = document.getElementById('tracker-count-text');
+        if (countText) {
+          countText.textContent = `${doneCount} of ${total} steps done`;
+        }
+        const percentPill = document.getElementById('tracker-percent-pill');
+        if (percentPill) {
+          percentPill.textContent = `${percent}%`;
+        }
+        const fillBar = document.getElementById('tracker-bar-fill');
+        if (fillBar) {
+          fillBar.style.width = `${percent}%`;
+        }
+
+        // Top tracker chips
+        list.forEach(item => {
+          const chip = document.getElementById(`tchip-${item.id}`);
+          if (chip) {
+            chip.classList.toggle('done', item.done);
+            const icon = chip.querySelector('.tchip-icon');
+            if (icon) {
+              icon.textContent = item.done ? '✓' : '○';
+            }
+          }
         });
-        element.classList.add('selected');
-        selectedValue = valueText;
+
+        // 2. Final review screen completion card
+        const finalCount = document.getElementById('final-tracker-count');
+        if (finalCount) {
+          finalCount.textContent = `${doneCount} of ${total}`;
+        }
+        const finalFill = document.getElementById('final-tracker-fill');
+        if (finalFill) {
+          finalFill.style.width = `${percent}%`;
+        }
+
+        list.forEach(item => {
+          const citem = document.getElementById(`citem-${item.num}`);
+          const cicon = document.getElementById(`cicon-${item.num}`);
+          const cpill = document.getElementById(`cpill-${item.num}`);
+          if (citem) {
+            citem.classList.toggle('done', item.done);
+          }
+          if (cicon) {
+            cicon.textContent = item.done ? '✓' : '○';
+          }
+          if (cpill) {
+            if (item.num === 7) {
+              if (item.done) {
+                let decLabel = 'Decision Made';
+                if (appState.finalDecision === 'yes') decLabel = 'Going for it!';
+                if (appState.finalDecision === 'no') decLabel = 'Decided not to';
+                if (appState.finalDecision === 'wait') decLabel = 'Pausing gently';
+                cpill.textContent = decLabel;
+              } else {
+                cpill.textContent = 'Pick below';
+              }
+            } else {
+              cpill.textContent = item.done ? 'Completed' : 'Waiting';
+            }
+          }
+        });
+
+        // 100% Unstuck banner & Replay button
+        const banner100 = document.getElementById('completion-banner-100');
+        const replayBtn = document.getElementById('replay-confetti-btn');
+        if (banner100) {
+          banner100.style.display = (doneCount === total) ? 'flex' : 'none';
+        }
+        if (replayBtn) {
+          replayBtn.style.display = appState.finalDecision ? 'inline-flex' : 'none';
+        }
+      }
+
+      function runCanvasConfettiFallback() {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.style.position = 'fixed';
+          canvas.style.top = '0';
+          canvas.style.left = '0';
+          canvas.style.width = '100vw';
+          canvas.style.height = '100vh';
+          canvas.style.pointerEvents = 'none';
+          canvas.style.zIndex = '99999';
+          document.body.appendChild(canvas);
+
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return;
+
+          const colors = ['#4caf50', '#81c784', '#ffd54f', '#f48fb1', '#ce93d8', '#80deea'];
+          const particles = [];
+          for (let i = 0; i < 70; i++) {
+            particles.push({
+              x: canvas.width / 2,
+              y: canvas.height * 0.65,
+              vx: (Math.random() - 0.5) * 16,
+              vy: (Math.random() - 0.7) * 18,
+              size: Math.random() * 8 + 4,
+              color: colors[Math.floor(Math.random() * colors.length)],
+              alpha: 1,
+              rotation: Math.random() * 360
+            });
+          }
+
+          let startTime = Date.now();
+          function animate() {
+            const elapsed = Date.now() - startTime;
+            if (elapsed > 2000) {
+              if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+              return;
+            }
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+              p.x += p.vx;
+              p.y += p.vy;
+              p.vy += 0.45;
+              p.rotation += 4;
+              p.alpha = Math.max(0, 1 - elapsed / 2000);
+              ctx.save();
+              ctx.globalAlpha = p.alpha;
+              ctx.translate(p.x, p.y);
+              ctx.rotate((p.rotation * Math.PI) / 180);
+              ctx.fillStyle = p.color;
+              ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+              ctx.restore();
+            });
+            requestAnimationFrame(animate);
+          }
+          requestAnimationFrame(animate);
+        } catch (e) {
+          // ignore
+        }
+      }
+
+      function launchCelebrationConfetti() {
+        try {
+          const conf = (typeof window !== 'undefined' && typeof window.confetti === 'function') ? window.confetti : null;
+          if (typeof conf === 'function') {
+            // Burst 1: Center fireworks
+            conf({
+              particleCount: 75,
+              spread: 75,
+              origin: { y: 0.65 },
+              colors: ['#4caf50', '#81c784', '#ffd54f', '#f48fb1', '#ce93d8', '#80deea']
+            });
+
+            // Burst 2: Left corner cannon
+            setTimeout(() => {
+              conf({
+                particleCount: 45,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0.05, y: 0.75 },
+                colors: ['#4caf50', '#ffd54f', '#f06292', '#ba68c8']
+              });
+            }, 200);
+
+            // Burst 3: Right corner cannon
+            setTimeout(() => {
+              conf({
+                particleCount: 45,
+                angle: 120,
+                spread: 55,
+                origin: { x: 0.95, y: 0.75 },
+                colors: ['#4caf50', '#ffd54f', '#f06292', '#80deea']
+              });
+            }, 400);
+
+            // Burst 4: Gentle star and circle drift
+            setTimeout(() => {
+              conf({
+                particleCount: 35,
+                spread: 90,
+                origin: { y: 0.4 },
+                scalar: 1.15,
+                ticks: 220,
+                colors: ['#ffca28', '#66bb6a', '#ab47bc', '#26c6da', '#ff7043']
+              });
+            }, 650);
+          } else {
+            runCanvasConfettiFallback();
+          }
+        } catch (e) {
+          runCanvasConfettiFallback();
+        }
+      }
+
+      // Screen navigation
+      function setScreen(screenName) {
+        appState.currentView = screenName;
+        document.querySelectorAll('.wizard-screen').forEach((el) => {
+          el.classList.remove('active');
+        });
+        const target = document.getElementById(`screen-${screenName}`);
+        if (target) {
+          target.classList.add('active');
+        }
+
+        const stepper = document.getElementById('wizard-stepper');
+        const trackerBar = document.getElementById('completion-tracker-bar');
+
+        if (screenName === 'landing') {
+          stepper.style.display = 'none';
+          if (trackerBar) trackerBar.style.display = 'none';
+        } else {
+          stepper.style.display = 'flex';
+          updateStepperUI(screenName);
+
+          // Show completion tracker on day 1, 2, 3 and final screens
+          if (['day1', 'day2', 'day3', 'final'].includes(screenName)) {
+            if (trackerBar) {
+              trackerBar.style.display = 'block';
+              updateCompletionTracker();
+            }
+          } else {
+            if (trackerBar) trackerBar.style.display = 'none';
+          }
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      window.setScreen = setScreen;
+
+      function updateStepperUI(screenName) {
+        const dots = ['step1', 'step2', 'day1', 'day2', 'day3', 'final'];
+        const currentIdx = dots.indexOf(screenName);
+
+        dots.forEach((name, idx) => {
+          const el = document.getElementById(`dot-${name}`);
+          if (!el) return;
+          el.classList.remove('active', 'completed');
+          if (idx < currentIdx) {
+            el.classList.add('completed');
+          } else if (idx === currentIdx) {
+            el.classList.add('active');
+          }
+        });
+      }
+
+      // Populate Day Screens
+      function populatePlanData() {
+        if (!appState.activePlan) return;
+
+        // Subtitles
+        document.getElementById('day1-choice-sub').textContent = `Choice: ${appState.choice}`;
+        document.getElementById('day2-choice-sub').textContent = `Choice: ${appState.choice}`;
+        document.getElementById('day3-choice-sub').textContent = `Choice: ${appState.choice}`;
+
+        // Day 1
+        document.getElementById('day1-card-title').textContent = appState.activePlan.day1Title;
+        document.getElementById('day1-card-desc').textContent = appState.activePlan.day1Desc;
+        document.getElementById('day1-card-tip').innerHTML = `<strong>Why this works:</strong> ${escapeHtml(appState.activePlan.day1Tip)}`;
+        const check1 = document.getElementById('check-day-1');
+        check1.checked = !!appState.completedSteps.day1;
+        document.getElementById('bubble-day1').classList.toggle('is-checked', !!appState.completedSteps.day1);
+
+        // Day 2
+        document.getElementById('day2-card-title').textContent = appState.activePlan.day2Title;
+        document.getElementById('day2-card-desc').textContent = appState.activePlan.day2Desc;
+        document.getElementById('day2-card-tip').innerHTML = `<strong>Why this works:</strong> ${escapeHtml(appState.activePlan.day2Tip)}`;
+        const check2 = document.getElementById('check-day-2');
+        check2.checked = !!appState.completedSteps.day2;
+        document.getElementById('bubble-day2').classList.toggle('is-checked', !!appState.completedSteps.day2);
+
+        const outreachEl = document.getElementById('outreach-text-content');
+        if (outreachEl) {
+          outreachEl.textContent = getOutreachMessage(appState.category, appState.choice);
+        }
+
+        // Day 3
+        document.getElementById('day3-card-title').textContent = appState.activePlan.day3Title;
+        document.getElementById('day3-card-desc').textContent = appState.activePlan.day3Desc;
+        document.getElementById('day3-card-tip').innerHTML = `<strong>Why this works:</strong> ${escapeHtml(appState.activePlan.day3Tip)}`;
+        const check3 = document.getElementById('check-day-3');
+        check3.checked = !!appState.completedSteps.day3;
+        document.getElementById('bubble-day3').classList.toggle('is-checked', !!appState.completedSteps.day3);
+      }
+
+      function populateFinalReview() {
+        document.getElementById('review-choice-text').textContent = appState.choice || 'Your big choice';
+        document.getElementById('review-value-text').textContent = `Core Value: ${appState.value} (${categoryLabels[appState.category] || 'Choice'})`;
+
+        // Notes summary
+        const pros = [appState.prosCons.pro1, appState.prosCons.pro2, appState.prosCons.pro3].filter(Boolean);
+        const cons = [appState.prosCons.con1, appState.prosCons.con2, appState.prosCons.con3].filter(Boolean);
+        const notesDiv = document.getElementById('review-notes-text');
+        if (pros.length > 0 || cons.length > 0) {
+          notesDiv.innerHTML = `
+            <div><strong>Likes:</strong> ${pros.join(', ') || 'None listed'}</div>
+            <div style="margin-top: 0.25rem;"><strong>Worries:</strong> ${cons.join(', ') || 'None listed'}</div>
+          `;
+        } else {
+          notesDiv.innerHTML = '<span style="color: var(--text-muted);">You did a quick mental check or messaged a friend.</span>';
+        }
+
+        // Feelings summary
+        const feelingsList = document.getElementById('review-feelings-list');
+        feelingsList.innerHTML = `
+          <div>Day 1: ${escapeHtml(appState.dayCheckins.day1.feel || 'Lighter than expected')}</div>
+          <div>Day 2: ${escapeHtml(appState.dayCheckins.day2.feel || 'Much clearer now')}</div>
+          <div>Day 3: ${escapeHtml(appState.dayCheckins.day3.feel || 'Proud of myself')}</div>
+        `;
+
+        // Mistakes list
+        const mistakesList = document.getElementById('review-mistakes-list');
+        const m1 = appState.dayCheckins.day1.mistake;
+        const m2 = appState.dayCheckins.day2.mistake;
+        const m3 = appState.dayCheckins.day3.mistake;
+        const recorded = [m1, m2, m3].filter(Boolean);
+        if (recorded.length > 0) {
+          mistakesList.innerHTML = recorded.map(m => `<div>• "${escapeHtml(m)}"</div>`).join('');
+        } else {
+          mistakesList.innerHTML = '<div>You gave yourself permission to make messy starts without judgment.</div>';
+        }
+
+        // Sync previously selected decision if present
+        if (appState.finalDecision) {
+          document.querySelectorAll('.decision-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-decision') === appState.finalDecision);
+          });
+          const empowerBox = document.getElementById('empower-box');
+          if (empowerBox) empowerBox.classList.add('show');
+        }
+
+        updateCompletionTracker();
       }
 
       function generatePlan() {
-        document.getElementById('display-choice').textContent = `Plan for: "${userChoice}"`;
-        document.getElementById('display-value').textContent = `Anchor Value: ${selectedValue}`;
-        goToStep(3);
+        const catGroup = planMatrix[appState.category] || planMatrix['general'];
+        const list = catGroup[appState.value] || catGroup['Peace of Mind'] || planMatrix['general']['Peace of Mind'];
+        const chosen = list[Math.floor(Math.random() * list.length)];
+        appState.activePlan = chosen;
+        populatePlanData();
+        persistState();
       }
 
-      function selectFeel(btn) {
-        document.querySelectorAll('.feel-chip').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
+      function escapeHtml(str) {
+        if (!str) return '';
+        return str
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      // LocalStorage Persistence
+      function persistState() {
+        try {
+          localStorage.setItem('unstuck_split_wizard_data', JSON.stringify({
+            choice: appState.choice,
+            category: appState.category,
+            value: appState.value,
+            activePlan: appState.activePlan,
+            completedSteps: appState.completedSteps,
+            day1ResearchNotes: appState.day1ResearchNotes,
+            dayCheckins: appState.dayCheckins,
+            prosCons: appState.prosCons,
+            messyNotes: appState.messyNotes,
+            finalDecision: appState.finalDecision
+          }));
+        } catch (e) {
+          // Ignore
+        }
+      }
+
+      function loadPersistedState() {
+        try {
+          const raw = localStorage.getItem('unstuck_split_wizard_data');
+          if (raw) {
+            const data = JSON.parse(raw);
+            if (data.choice) appState.choice = data.choice;
+            if (data.category) appState.category = data.category;
+            if (data.value) appState.value = data.value;
+            if (data.activePlan) appState.activePlan = data.activePlan;
+            if (data.completedSteps) appState.completedSteps = data.completedSteps;
+            if (data.day1ResearchNotes) appState.day1ResearchNotes = data.day1ResearchNotes;
+            if (data.dayCheckins) appState.dayCheckins = data.dayCheckins;
+            if (data.prosCons) appState.prosCons = data.prosCons;
+            if (data.messyNotes) appState.messyNotes = data.messyNotes;
+            if (data.finalDecision) appState.finalDecision = data.finalDecision;
+
+            const input = document.getElementById('wizard-choice-input');
+            if (input) input.value = appState.choice;
+            const catSelect = document.getElementById('wizard-category-select');
+            if (catSelect) catSelect.value = appState.category;
+
+            document.querySelectorAll('.value-card').forEach(c => {
+              const val = c.getAttribute('data-val');
+              const isMatch = val === appState.value;
+              c.classList.toggle('selected', isMatch);
+              const pill = c.querySelector('.value-check-pill');
+              if (pill) pill.textContent = isMatch ? 'Selected' : 'Select';
+            });
+
+            // Day 1 research notes
+            const d1Notes = document.getElementById('day1-research-notes');
+            if (d1Notes && appState.day1ResearchNotes) d1Notes.value = appState.day1ResearchNotes;
+
+            // Day 2 scratchpad
+            ['pro-1', 'pro-2', 'pro-3', 'con-1', 'con-2', 'con-3'].forEach(id => {
+              const el = document.getElementById(`pad-${id}`);
+              const key = id.replace('-', '');
+              if (el && appState.prosCons[key]) {
+                el.value = appState.prosCons[key];
+              }
+            });
+
+            // Day 3 messy notes
+            const notesEl = document.getElementById('messy-notes-area');
+            if (notesEl && appState.messyNotes) {
+              notesEl.value = appState.messyNotes;
+            }
+
+            // Sync checkin inputs
+            const d1Input = document.getElementById('day1-mistake-input');
+            if (d1Input && appState.dayCheckins.day1.mistake) d1Input.value = appState.dayCheckins.day1.mistake;
+            const d2Input = document.getElementById('day2-mistake-input');
+            if (d2Input && appState.dayCheckins.day2.mistake) d2Input.value = appState.dayCheckins.day2.mistake;
+            const d3Input = document.getElementById('day3-mistake-input');
+            if (d3Input && appState.dayCheckins.day3.mistake) d3Input.value = appState.dayCheckins.day3.mistake;
+
+            if (appState.activePlan) {
+              populatePlanData();
+            }
+            updateCompletionTracker();
+          }
+        } catch (e) {
+          // Ignore
+        }
+      }
+
+      // Countdown Timers
+      function setupTimer(displayId, startId, pauseId, resetId, totalSeconds) {
+        let remaining = totalSeconds;
+        let timerInterval = null;
+
+        const display = document.getElementById(displayId);
+        const startBtn = document.getElementById(startId);
+        const pauseBtn = document.getElementById(pauseId);
+        const resetBtn = document.getElementById(resetId);
+
+        if (!display || !startBtn || !pauseBtn || !resetBtn) return;
+
+        function update() {
+          const m = Math.floor(remaining / 60);
+          const s = remaining % 60;
+          display.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        startBtn.addEventListener('click', () => {
+          if (timerInterval) return;
+          timerInterval = setInterval(() => {
+            if (remaining > 0) {
+              remaining--;
+              update();
+            } else {
+              clearInterval(timerInterval);
+              timerInterval = null;
+              playChime();
+              showToast('Time is up. High five for taking this small step today.');
+            }
+          }, 1000);
+        });
+
+        pauseBtn.addEventListener('click', () => {
+          if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+          }
+        });
+
+        resetBtn.addEventListener('click', () => {
+          if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+          }
+          remaining = totalSeconds;
+          update();
+        });
+
+        update();
+      }
+
+      // Branded PDF Generator & Downloader
+      async function exportPlanAsPDF() {
+        const downloadBtns = [
+          document.getElementById('download-pdf-btn'),
+          document.getElementById('download-pdf-card-btn')
+        ].filter(Boolean);
+
+        downloadBtns.forEach(b => {
+          b.disabled = true;
+          b.dataset.prevHtml = b.innerHTML;
+          b.innerHTML = '<span>⏳ Preparing PDF...</span>';
+        });
+
+        showToast('Building your branded PDF report...');
+
+        try {
+          const exportContainer = document.createElement('div');
+          exportContainer.id = 'pdf-render-container';
+          exportContainer.style.width = '760px';
+          exportContainer.style.background = '#faf7f2';
+          exportContainer.style.color = '#334155';
+          exportContainer.style.fontFamily = "'Plus Jakarta Sans', -apple-system, sans-serif";
+          exportContainer.style.padding = '32px 36px';
+          exportContainer.style.boxSizing = 'border-box';
+          exportContainer.style.position = 'fixed';
+          exportContainer.style.left = '-9999px';
+          exportContainer.style.top = '0';
+
+          const today = new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+
+          const choiceTitle = appState.choice || 'My Big Choice';
+          const coreVal = appState.value || 'Peace of Mind';
+          const catLabel = categoryLabels[appState.category] || 'Choice';
+
+          let decisionLabel = 'Still testing and exploring';
+          let decisionColor = '#2e7d32';
+          if (appState.finalDecision === 'yes') {
+            decisionLabel = 'Yes, I want to go for it';
+            decisionColor = '#15803d';
+          } else if (appState.finalDecision === 'no') {
+            decisionLabel = 'I decided not to do it, and that feels good';
+            decisionColor = '#be123c';
+          } else if (appState.finalDecision === 'wait') {
+            decisionLabel = 'I need a little more time, and that is okay';
+            decisionColor = '#b45309';
+          }
+
+          const pros = [appState.prosCons.pro1, appState.prosCons.pro2, appState.prosCons.pro3].filter(Boolean);
+          const cons = [appState.prosCons.con1, appState.prosCons.con2, appState.prosCons.con3].filter(Boolean);
+
+          const { doneCount, total, percent } = getCompletionDetails();
+
+          exportContainer.innerHTML = `
+            <div style="border-bottom: 2px solid #e8decb; padding-bottom: 16px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 44px; height: 44px; background: #c8e6c9; border: 2px solid #81c784; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+                  🌱
+                </div>
+                <div>
+                  <h1 style="font-size: 20px; font-weight: 800; color: #1e293b; margin: 0;">Unstuck: The Micro-Step Planner</h1>
+                  <p style="font-size: 11px; color: #64748b; margin: 2px 0 0 0;">3-Day Micro-Action Experiment and Decision Report</p>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="background: #e8f5e9; color: #2e7d32; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 9999px; display: inline-block; border: 1px solid #c8e6c9;">
+                  ${doneCount} of ${total} Steps Done (${percent}%)
+                </div>
+                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">${today}</div>
+              </div>
+            </div>
+
+            <!-- Choice Overview Box -->
+            <div style="background: #ffffff; border: 1.5px solid #e2ece1; border-radius: 16px; padding: 16px 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+              <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #2e7d32; margin-bottom: 4px;">
+                The Choice Tested
+              </div>
+              <h2 style="font-size: 17px; color: #0f172a; margin: 0 0 8px 0; font-weight: 700;">
+                ${escapeHtml(choiceTitle)}
+              </h2>
+              <div style="display: flex; gap: 8px;">
+                <span style="background: #fff9db; color: #92400e; border: 1px solid #ffe066; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 9999px;">
+                  Core Value: ${escapeHtml(coreVal)}
+                </span>
+                <span style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 9999px;">
+                  Category: ${escapeHtml(catLabel)}
+                </span>
+              </div>
+            </div>
+
+            <!-- Day 1 Card -->
+            <div style="background: #ffffff; border: 1.5px solid #c8e6c9; border-radius: 14px; padding: 14px 18px; margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <h3 style="font-size: 13px; font-weight: 700; color: #1e293b; margin: 0;">
+                  ⏱️ Day 1: 10-Minute Quiet Look
+                </h3>
+                <span style="font-size: 11px; font-weight: 700; color: #15803d; background: #dcfce7; padding: 2px 8px; border-radius: 9999px;">
+                  ${appState.completedSteps.day1 ? 'Completed' : 'Logged'}
+                </span>
+              </div>
+              <div style="font-size: 11px; color: #475569; margin-bottom: 6px; line-height: 1.45;">
+                <strong>Research Notes:</strong> ${escapeHtml(appState.day1ResearchNotes || 'Looked into real facts and calmed down racing thoughts.')}
+              </div>
+              <div style="background: #f8fafc; border-radius: 8px; padding: 6px 10px; font-size: 10.5px; color: #64748b;">
+                <span>🌙 Felt: <strong>${escapeHtml(appState.dayCheckins.day1.feel || 'Lighter than expected')}</strong></span>
+                ${appState.dayCheckins.day1.mistake ? ` | Mistake accepted: "${escapeHtml(appState.dayCheckins.day1.mistake)}"` : ''}
+              </div>
+            </div>
+
+            <!-- Day 2 Card -->
+            <div style="background: #ffffff; border: 1.5px solid #ffe066; border-radius: 14px; padding: 14px 18px; margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <h3 style="font-size: 13px; font-weight: 700; color: #1e293b; margin: 0;">
+                  ⚖️ Day 2: 3 Pros and Cons / Outreach
+                </h3>
+                <span style="font-size: 11px; font-weight: 700; color: #15803d; background: #dcfce7; padding: 2px 8px; border-radius: 9999px;">
+                  ${appState.completedSteps.day2 ? 'Completed' : 'Logged'}
+                </span>
+              </div>
+              <div style="display: flex; gap: 10px; margin-bottom: 6px; font-size: 11px;">
+                <div style="flex: 1; background: #f0fdf4; border-radius: 8px; padding: 6px 10px;">
+                  <strong style="color: #166534; display: block; margin-bottom: 2px;">Likes (Pros):</strong>
+                  ${pros.length > 0 ? pros.map(p => `• ${escapeHtml(p)}`).join('<br>') : 'None listed'}
+                </div>
+                <div style="flex: 1; background: #fff1f2; border-radius: 8px; padding: 6px 10px;">
+                  <strong style="color: #9f1239; display: block; margin-bottom: 2px;">Worries (Cons):</strong>
+                  ${cons.length > 0 ? cons.map(c => `• ${escapeHtml(c)}`).join('<br>') : 'None listed'}
+                </div>
+              </div>
+              <div style="background: #f8fafc; border-radius: 8px; padding: 6px 10px; font-size: 10.5px; color: #64748b;">
+                <span>🌙 Felt: <strong>${escapeHtml(appState.dayCheckins.day2.feel || 'Much clearer now')}</strong></span>
+                ${appState.dayCheckins.day2.mistake ? ` | Mistake accepted: "${escapeHtml(appState.dayCheckins.day2.mistake)}"` : ''}
+              </div>
+            </div>
+
+            <!-- Day 3 Card -->
+            <div style="background: #ffffff; border: 1.5px solid #e9d5ff; border-radius: 14px; padding: 14px 18px; margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <h3 style="font-size: 13px; font-weight: 700; color: #1e293b; margin: 0;">
+                  🎨 Day 3: 15-Minute Messy Try
+                </h3>
+                <span style="font-size: 11px; font-weight: 700; color: #15803d; background: #dcfce7; padding: 2px 8px; border-radius: 9999px;">
+                  ${appState.completedSteps.day3 ? 'Completed' : 'Logged'}
+                </span>
+              </div>
+              <div style="font-size: 11px; color: #475569; margin-bottom: 6px; line-height: 1.45;">
+                <strong>Messy Draft Notes:</strong> ${escapeHtml(appState.messyNotes || 'Practiced taking action without demanding perfection.')}
+              </div>
+              <div style="background: #f8fafc; border-radius: 8px; padding: 6px 10px; font-size: 10.5px; color: #64748b;">
+                <span>🌙 Felt: <strong>${escapeHtml(appState.dayCheckins.day3.feel || 'Proud of myself')}</strong></span>
+                ${appState.dayCheckins.day3.mistake ? ` | Mistake accepted: "${escapeHtml(appState.dayCheckins.day3.mistake)}"` : ''}
+              </div>
+            </div>
+
+            <!-- Final Decision & Confidence Boost -->
+            <div style="background: #fffdf5; border: 2px solid #fde68a; border-radius: 16px; padding: 14px 18px; margin-bottom: 14px;">
+              <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #92400e; margin-bottom: 3px;">
+                Final Call
+              </div>
+              <h3 style="font-size: 15px; font-weight: 800; color: ${decisionColor}; margin: 0 0 6px 0;">
+                🎯 ${escapeHtml(decisionLabel)}
+              </h3>
+              <p style="font-size: 11px; color: #78350f; line-height: 1.5; margin: 0;">
+                ${document.getElementById('empower-text').textContent.trim() || 'Whatever you decide, remember this: the hardest part of any choice is not picking right, it is believing in yourself to handle whatever comes next. You just proved you can take steps through uncertainty.'}
+              </p>
+            </div>
+
+            <!-- Footer note -->
+            <div style="border-top: 1.5px dashed #cbd5e1; padding-top: 10px; text-align: center; font-size: 10.5px; color: #94a3b8;">
+              <p style="margin: 0;">Unstuck: The Micro-Step Planner. Made to help you test things out and be kind to yourself.</p>
+              <p style="margin: 2px 0 0 0;">Taking small low-risk steps builds real self-trust. Moving forward does not require 100 percent perfection.</p>
+            </div>
+          `;
+
+          document.body.appendChild(exportContainer);
+
+          const safeFilename = `unstuck-${(appState.choice || 'plan').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 20)}.pdf`;
+
+          const opt = {
+            margin: [8, 8, 8, 8],
+            filename: safeFilename,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, logging: false },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          };
+
+          const pdfEngine = (typeof window !== 'undefined' && typeof window.html2pdf === 'function') ? window.html2pdf : null;
+          if (typeof pdfEngine === 'function') {
+            await pdfEngine().set(opt).from(exportContainer).save();
+            showToast('PDF downloaded successfully!');
+          } else {
+            window.print();
+            showToast('Opening print dialog to save as PDF.');
+          }
+
+          document.body.removeChild(exportContainer);
+        } catch (err) {
+          console.error('PDF export error', err);
+          showToast('Could not create PDF directly. Opening print dialog.');
+          window.print();
+        } finally {
+          downloadBtns.forEach(b => {
+            b.disabled = false;
+            b.innerHTML = b.dataset.prevHtml || '<span>📄 Download PDF</span>';
+          });
+        }
+      }
+
+      window.exportPlanAsPDF = exportPlanAsPDF;
+
+      // Safe Element Event Binder
+      function on(id, event, fn) {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener(event, fn);
+      }
+
+      // DOM Initialization
+      function initApp() {
+        loadPersistedState();
+
+        on('nav-brand-btn', 'click', () => {
+          setScreen('landing');
+        });
+        on('nav-reset-btn', 'click', () => {
+          appState.choice = '';
+          appState.activePlan = null;
+          appState.completedSteps = { day1: false, day2: false, day3: false };
+          appState.day1ResearchNotes = '';
+          appState.dayCheckins = {
+            day1: { feel: '', mistake: '' },
+            day2: { feel: '', mistake: '' },
+            day3: { feel: '', mistake: '' }
+          };
+          appState.prosCons = { pro1: '', pro2: '', pro3: '', con1: '', con2: '', con3: '' };
+          appState.messyNotes = '';
+          appState.finalDecision = '';
+          const input = document.getElementById('wizard-choice-input');
+          if (input) input.value = '';
+          persistState();
+          updateCompletionTracker();
+          setScreen('landing');
+          showToast('Started fresh.');
+        });
+
+        on('start-wizard-btn', 'click', () => {
+          setScreen('step1');
+        });
+
+        const choiceInput = document.getElementById('wizard-choice-input');
+        const categorySelect = document.getElementById('wizard-category-select');
+
+        choiceInput.addEventListener('input', () => {
+          const text = choiceInput.value.trim();
+          if (text) {
+            const detected = detectCategory(text);
+            categorySelect.value = detected;
+            appState.category = detected;
+          }
+          appState.choice = choiceInput.value;
+        });
+
+        categorySelect.addEventListener('change', () => {
+          appState.category = categorySelect.value;
+        });
+
+        document.querySelectorAll('.preset-pill').forEach(pill => {
+          pill.addEventListener('click', () => {
+            const txt = pill.getAttribute('data-text');
+            const cat = pill.getAttribute('data-cat');
+            choiceInput.value = txt;
+            appState.choice = txt;
+            if (cat) {
+              categorySelect.value = cat;
+              appState.category = cat;
+            }
+            choiceInput.focus();
+          });
+        });
+
+        document.getElementById('step1-back-btn').addEventListener('click', () => {
+          setScreen('landing');
+        });
+
+        document.getElementById('step1-next-btn').addEventListener('click', () => {
+          const text = choiceInput.value.trim();
+          if (!text) {
+            showToast('Please type the choice on your mind first.');
+            choiceInput.focus();
+            return;
+          }
+          appState.choice = text;
+          appState.category = categorySelect.value;
+          setScreen('step2');
+        });
+
+        // Step 2 Value Cards
+        document.querySelectorAll('.value-card').forEach(card => {
+          card.addEventListener('click', () => {
+            document.querySelectorAll('.value-card').forEach(c => {
+              c.classList.remove('selected');
+              const p = c.querySelector('.value-check-pill');
+              if (p) p.textContent = 'Select';
+            });
+            card.classList.add('selected');
+            const p = card.querySelector('.value-check-pill');
+            if (p) p.textContent = 'Selected';
+
+            appState.value = card.getAttribute('data-val');
+          });
+        });
+
+        document.getElementById('step2-back-btn').addEventListener('click', () => {
+          setScreen('step1');
+        });
+
+        document.getElementById('step2-next-btn').addEventListener('click', () => {
+          generatePlan();
+          setScreen('day1');
+        });
+
+        // Day 1 Controls
+        document.getElementById('day1-back-btn').addEventListener('click', () => {
+          setScreen('step2');
+        });
+
+        document.getElementById('check-day-1').addEventListener('change', (e) => {
+          appState.completedSteps.day1 = e.target.checked;
+          document.getElementById('bubble-day1').classList.toggle('is-checked', e.target.checked);
+          if (e.target.checked) {
+            playChime();
+            showToast('Great job! Day 1 action complete.');
+          }
+          persistState();
+          updateCompletionTracker();
+        });
+
+        document.getElementById('day1-research-notes').addEventListener('input', (e) => {
+          appState.day1ResearchNotes = e.target.value;
+          persistState();
+          updateCompletionTracker();
+        });
+
+        // Day 1 Feel Pills
+        document.querySelectorAll('#day1-feel-pills .feel-pill-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('#day1-feel-pills .feel-pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            appState.dayCheckins.day1.feel = btn.getAttribute('data-feel');
+            persistState();
+            updateCompletionTracker();
+          });
+        });
+
+        document.getElementById('day1-mistake-input').addEventListener('input', (e) => {
+          appState.dayCheckins.day1.mistake = e.target.value;
+          persistState();
+          updateCompletionTracker();
+        });
+
+        document.getElementById('day1-next-btn').addEventListener('click', () => {
+          setScreen('day2');
+          showToast('Welcome to Day 2.');
+        });
+
+        // Day 2 Controls
+        document.getElementById('day2-back-btn').addEventListener('click', () => {
+          setScreen('day1');
+        });
+
+        document.getElementById('check-day-2').addEventListener('change', (e) => {
+          appState.completedSteps.day2 = e.target.checked;
+          document.getElementById('bubble-day2').classList.toggle('is-checked', e.target.checked);
+          if (e.target.checked) {
+            playChime();
+            showToast('Awesome! Day 2 action complete.');
+          }
+          persistState();
+          updateCompletionTracker();
+        });
+
+        // Copy outreach message
+        document.getElementById('copy-outreach-btn').addEventListener('click', () => {
+          const msg = document.getElementById('outreach-text-content').textContent.trim();
+          navigator.clipboard.writeText(msg).then(() => {
+            showToast('Text copied to clipboard.');
+          });
+        });
+
+        // Scratchpad autosave
+        ['pro-1', 'pro-2', 'pro-3', 'con-1', 'con-2', 'con-3'].forEach(id => {
+          const el = document.getElementById(`pad-${id}`);
+          const key = id.replace('-', '');
+          el.addEventListener('input', () => {
+            appState.prosCons[key] = el.value;
+            persistState();
+            updateCompletionTracker();
+          });
+        });
+
+        // Day 2 Feel Pills
+        document.querySelectorAll('#day2-feel-pills .feel-pill-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('#day2-feel-pills .feel-pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            appState.dayCheckins.day2.feel = btn.getAttribute('data-feel');
+            persistState();
+            updateCompletionTracker();
+          });
+        });
+
+        document.getElementById('day2-mistake-input').addEventListener('input', (e) => {
+          appState.dayCheckins.day2.mistake = e.target.value;
+          persistState();
+          updateCompletionTracker();
+        });
+
+        document.getElementById('day2-next-btn').addEventListener('click', () => {
+          setScreen('day3');
+          showToast('Welcome to Day 3.');
+        });
+
+        // Day 3 Controls
+        document.getElementById('day3-back-btn').addEventListener('click', () => {
+          setScreen('day2');
+        });
+
+        document.getElementById('check-day-3').addEventListener('change', (e) => {
+          appState.completedSteps.day3 = e.target.checked;
+          document.getElementById('bubble-day3').classList.toggle('is-checked', e.target.checked);
+          if (e.target.checked) {
+            playChime();
+            showToast('Hooray! Day 3 action complete.');
+          }
+          persistState();
+          updateCompletionTracker();
+        });
+
+        // Messy Notes autosave
+        const messyArea = document.getElementById('messy-notes-area');
+        messyArea.addEventListener('input', () => {
+          appState.messyNotes = messyArea.value;
+          persistState();
+          updateCompletionTracker();
+        });
+
+        // Day 3 Feel Pills
+        document.querySelectorAll('#day3-feel-pills .feel-pill-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('#day3-feel-pills .feel-pill-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            appState.dayCheckins.day3.feel = btn.getAttribute('data-feel');
+            persistState();
+            updateCompletionTracker();
+          });
+        });
+
+        document.getElementById('day3-mistake-input').addEventListener('input', (e) => {
+          appState.dayCheckins.day3.mistake = e.target.value;
+          persistState();
+          updateCompletionTracker();
+        });
+
+        document.getElementById('day3-next-btn').addEventListener('click', () => {
+          populateFinalReview();
+          setScreen('final');
+          playChime();
+        });
+
+        // Final Screen Decision Buttons
+        const decisionButtons = document.querySelectorAll('.decision-btn');
+        const empowerBox = document.getElementById('empower-box');
+        const empowerTitle = document.getElementById('empower-title');
+        const empowerText = document.getElementById('empower-text');
+
+        decisionButtons.forEach(btn => {
+          btn.addEventListener('click', () => {
+            decisionButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const dec = btn.getAttribute('data-decision');
+            appState.finalDecision = dec;
+            persistState();
+
+            updateCompletionTracker();
+            launchCelebrationConfetti();
+            playChime();
+
+            empowerBox.classList.add('show');
+            if (dec === 'yes') {
+              empowerTitle.textContent = 'Proud of you for choosing to go for it!';
+              empowerText.textContent = 'You took the time to check the facts, think it through, and test it out. Remember: moving forward does not mean everything has to be 100 percent flawless. You now have the momentum and self-trust to take the next step one day at a time.';
+            } else if (dec === 'no') {
+              empowerTitle.textContent = 'Saying no is a superpower.';
+              empowerText.textContent = 'A lot of people feel pressured to say yes to everything. Walking away from something that does not fit your peace of mind or your wallet shows huge self-respect. You cleared away mental clutter and protected your energy.';
+            } else {
+              empowerTitle.textContent = 'Pausing is completely allowed.';
+              empowerText.textContent = 'Giving yourself permission to pause is not being stuck. It is being patient with yourself. You gathered real data over these three days, and when the right time comes, you will know exactly what feels right.';
+            }
+
+            empowerBox.scrollIntoView({ behavior: 'smooth' });
+          });
+        });
+
+        // Replay Confetti Button
+        const replayBtn = document.getElementById('replay-confetti-btn');
+        if (replayBtn) {
+          replayBtn.addEventListener('click', () => {
+            launchCelebrationConfetti();
+            playChime();
+            showToast('Celebrating your courage to choose!');
+          });
+        }
+
+        // Tracker Chips navigation
+        document.querySelectorAll('.tracker-chip').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const target = btn.getAttribute('data-target');
+            if (target) {
+              if (target === 'final') populateFinalReview();
+              setScreen(target);
+            }
+          });
+        });
+
+        document.getElementById('final-back-btn').addEventListener('click', () => {
+          setScreen('day3');
+        });
+
+        document.getElementById('final-new-btn').addEventListener('click', () => {
+          setScreen('step1');
+        });
+
+        // PDF Export Buttons
+        const downloadBtn = document.getElementById('download-pdf-btn');
+        if (downloadBtn) {
+          downloadBtn.addEventListener('click', exportPlanAsPDF);
+        }
+        const downloadCardBtn = document.getElementById('download-pdf-card-btn');
+        if (downloadCardBtn) {
+          downloadCardBtn.addEventListener('click', exportPlanAsPDF);
+        }
+
+        // Timers
+        setupTimer('time-display-1', 'btn-start-1', 'btn-pause-1', 'btn-reset-1', 600); // 10 mins
+        setupTimer('time-display-3', 'btn-start-3', 'btn-pause-3', 'btn-reset-3', 900); // 15 mins
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initApp);
+      } else {
+        initApp();
       }
     </script>
   </body>
